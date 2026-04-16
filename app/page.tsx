@@ -37,16 +37,9 @@ import {
 } from "./components/InlineInteraction";
 import { CustomCursor } from "./components/CustomCursor";
 import { LiveClock } from "./components/LiveClock";
+import { WorkGallery } from "./components/WorkGallery";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-// ─── SWAP: projects ───────────────────────────────────────────────────────────
-const PROJECTS = [
-  { year: "2024", title: "Haptic Response System", tag: "XR / Interaction" },
-  { year: "2023", title: "Interval — Temporal UI Kit", tag: "UI/UX / Design System" },
-  { year: "2023", title: "Pause Campaign", tag: "Advertising / Motion" },
-  { year: "2022", title: "Signal — Type in Time", tag: "Graphic Design / Editorial" },
-];
 
 // ─── HERO PARAGRAPH ───────────────────────────────────────────────────────────
 function HeroParagraph() {
@@ -108,55 +101,6 @@ function HeroParagraph() {
   );
 }
 
-// ─── PROJECT ROW ──────────────────────────────────────────────────────────────
-function ProjectRow({
-  year,
-  title,
-  tag,
-  index,
-}: {
-  year: string;
-  title: string;
-  tag: string;
-  index: number;
-}) {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <motion.div
-      className="flex items-baseline gap-4 sm:gap-8 py-3.5 border-b border-[#E5E5E5]"
-      data-interactive="true"
-      initial={{ opacity: 0, y: 6 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.35, delay: index * 0.07, ease: EASE }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <span className="text-[11px] opacity-35 tabular-nums w-9 shrink-0 font-[family-name:var(--font-mono)]">
-        {year}
-      </span>
-      <motion.span
-        className="text-[13px] font-[family-name:var(--font-mono)] flex-1"
-        animate={{ x: hovered ? 4 : 0 }}
-        transition={{ duration: 0.18, ease: EASE }}
-      >
-        {title}
-      </motion.span>
-      <span className="text-[11px] opacity-35 font-[family-name:var(--font-mono)] hidden sm:block shrink-0">
-        {tag}
-      </span>
-      <motion.span
-        className="text-[11px] font-[family-name:var(--font-mono)] shrink-0 w-4"
-        animate={{ opacity: hovered ? 0.5 : 0 }}
-        transition={{ duration: 0.15 }}
-      >
-        ↗
-      </motion.span>
-    </motion.div>
-  );
-}
-
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 export default function Page() {
   return (
@@ -164,7 +108,7 @@ export default function Page() {
       <CustomCursor />
 
       {/* ── HERO — full viewport, no scroll ────────────────────────── */}
-      <section className="h-[100dvh] flex flex-col bg-[#FAFAFA] overflow-hidden">
+      <section className="relative h-[100dvh] flex flex-col bg-[#FAFAFA] overflow-hidden">
 
         {/* Top navigation */}
         <motion.nav
@@ -231,41 +175,31 @@ export default function Page() {
             ))}
           </div>
         </motion.footer>
+
+        {/* Scroll indicator */}
+        <motion.div
+          className="absolute bottom-16 sm:bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 1.2, ease: EASE }}
+        >
+          <span
+            className="font-[family-name:var(--font-mono)] text-[9px] tracking-[0.22em] uppercase text-[#111] opacity-25"
+          >
+            scroll
+          </span>
+          <motion.span
+            className="font-[family-name:var(--font-mono)] text-[13px] text-[#111] opacity-25"
+            animate={{ y: [0, 4, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          >
+            ↓
+          </motion.span>
+        </motion.div>
       </section>
 
-      {/* ── SELECTED WORK — scrollable below fold ───────────────────── */}
-      <section
-        id="work"
-        className="bg-[#FAFAFA] px-6 sm:px-10 pt-20 pb-28 flex justify-center"
-      >
-        <div className="w-full max-w-[720px]">
-          <motion.p
-            className="text-[10px] sm:text-[11px] font-[family-name:var(--font-mono)] opacity-30 tracking-[0.2em] mb-10 uppercase"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 0.3 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, ease: EASE }}
-          >
-            // selected work
-          </motion.p>
-
-          <div className="border-t border-[#E5E5E5]">
-            {PROJECTS.map((p, i) => (
-              <ProjectRow key={p.title} {...p} index={i} />
-            ))}
-          </div>
-
-          <motion.p
-            className="mt-20 text-[10px] font-[family-name:var(--font-mono)] opacity-20 text-center tracking-[0.15em]"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 0.2 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.35, ease: EASE }}
-          >
-            LATENCY &copy; {new Date().getFullYear()}
-          </motion.p>
-        </div>
-      </section>
+      {/* ── WORK GALLERY — scrollable below fold ────────────────────── */}
+      <WorkGallery />
 
       {/* Blink keyframe for logo dot */}
       <style>{`
