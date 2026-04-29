@@ -3,14 +3,12 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
 import type { Work, PortfolioCategory } from "@/lib/db";
 
-export type FilterCategory = string;
+export type FilterCategory = string; // category id or "ALL"
 
 export interface WorkCanvasCtx {
   works:          Work[];
   categories:     PortfolioCategory[];
-  hoveredId:      string | null;
   filterCategory: FilterCategory;
-  setHovered:     (id: string | null) => void;
   setFilter:      (cat: FilterCategory) => void;
 }
 
@@ -23,18 +21,12 @@ export function WorkCanvasProvider({
   works: Work[];
   categories: PortfolioCategory[];
 }) {
-  const [hoveredId,      setHoveredId]      = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<FilterCategory>("ALL");
 
-  const setHovered = useCallback((id: string | null) => setHoveredId(id), []);
-
-  const setFilter = useCallback((cat: FilterCategory) => {
-    setFilterCategory(cat);
-    setHoveredId(null);
-  }, []);
+  const setFilter = useCallback((cat: FilterCategory) => setFilterCategory(cat), []);
 
   return (
-    <Ctx.Provider value={{ works, categories, hoveredId, filterCategory, setHovered, setFilter }}>
+    <Ctx.Provider value={{ works, categories, filterCategory, setFilter }}>
       {children}
     </Ctx.Provider>
   );
