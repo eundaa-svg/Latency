@@ -2,8 +2,8 @@
 
 import { memo } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import type { Work } from "@/lib/db";
-import { useWorkCanvas } from "./WorkCanvasContext";
 
 // No Framer Motion on cards — CSS-only hover and entry animation.
 // Framer Motion subscriptions on each card were adding JS overhead per-hover.
@@ -13,7 +13,7 @@ interface Props {
 }
 
 export function WorkGrid({ works }: Props) {
-  const { selectWork } = useWorkCanvas();
+  const router = useRouter();
 
   if (works.length === 0) {
     return (
@@ -37,7 +37,7 @@ export function WorkGrid({ works }: Props) {
             work={work}
             index={i}
             eager={i === 0}
-            onSelect={selectWork}
+            onSelect={(id) => router.push(`/work/${id}`)}
           />
         ))}
       </div>
