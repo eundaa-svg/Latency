@@ -43,8 +43,14 @@
 }
 
 /* ── Cursor ───────────────────────────────────────────────────────────────── */
-* {
-  cursor: none !important;
+/* Apply only to html/body — children inherit, avoids per-element recalculation */
+html,
+body {
+  cursor: none;
+}
+/* Preserve pointer cursor on interactive elements so OS doesn't override */
+[data-interactive], a, button, [role="button"] {
+  cursor: none;
 }
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */
