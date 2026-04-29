@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LATENCY — Portfolio
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+cp .env.local.example .env.local   # set ADMIN_PASSWORD and ADMIN_ENABLED=true
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Admin Panel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Visit `/admin/login` and enter your `ADMIN_PASSWORD` from `.env.local`.
 
-## Learn More
+| Route | Purpose |
+|---|---|
+| `/admin` | Dashboard + Publish button |
+| `/admin/works` | Add / edit / reorder works |
+| `/admin/works/new` | Add a new work |
+| `/admin/categories` | Manage categories |
 
-To learn more about Next.js, take a look at the following resources:
+## Publishing Changes to Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Content edits (works, categories, uploaded images) are saved to `data/portfolio.json`
+and `public/uploads/` on your local machine. Vercel only reflects what's in git.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Option A — Admin UI (recommended)**
+1. Make changes in the admin panel
+2. Go to `/admin` and click **"Publish to Vercel →"**
+3. Vercel detects the push and rebuilds in ~1 minute
 
-## Deploy on Vercel
+**Option B — Terminal**
+```bash
+npm run admin:publish
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Both options run:
+```
+git add data/portfolio.json public/uploads/
+git commit -m "chore: update portfolio content"
+git push origin main
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> The publish API is disabled on production (`NODE_ENV === "production"`).
+> On Vercel itself, use the terminal on your local machine.
+
+## Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `ADMIN_PASSWORD` | Yes | Password for `/admin/login` |
+| `ADMIN_ENABLED` | Yes | Set to `"true"` to enable the admin panel locally |
+
+Copy `.env.local.example` → `.env.local` and fill in values. Never commit `.env.local`.
+
+## Data Files
+
+- `data/portfolio.json` — works and categories (committed to git for Vercel builds)
+- `public/uploads/` — uploaded images (committed to git, excluded by default in `.gitignore`)
+
+To include uploads in your Vercel build, run `npm run admin:publish` after adding images
+or commit them manually.

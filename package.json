@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "admin:publish": "node scripts/publish.mjs"
   },
   "dependencies": {
     "framer-motion": "^12.38.0",

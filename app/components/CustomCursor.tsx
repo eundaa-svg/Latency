@@ -53,7 +53,8 @@ export function CustomCursor() {
 
     // ── Hover detection (capture phase = no child-crossing flicker) ───────
     const onEnter = (e: MouseEvent) => {
-      if ((e.target as Element)?.closest("[data-interactive]")) {
+      // instanceof guard: e.target can be TextNode or ShadowRoot — neither has .closest
+      if (e.target instanceof Element && e.target.closest("[data-interactive]")) {
         targetSize = SIZE_HOVERED;
         const el = dotRef.current;
         if (el) {
@@ -63,7 +64,8 @@ export function CustomCursor() {
       }
     };
     const onLeave = (e: MouseEvent) => {
-      const related = (e as MouseEvent & { relatedTarget: EventTarget | null }).relatedTarget;
+      // relatedTarget can also be a non-Element node
+      const related = e.relatedTarget;
       if (!(related instanceof Element) || !related.closest("[data-interactive]")) {
         targetSize = SIZE_DEFAULT;
         const el = dotRef.current;
