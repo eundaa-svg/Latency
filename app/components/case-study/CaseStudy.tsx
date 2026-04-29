@@ -52,7 +52,7 @@ export function CaseStudy({
             {(["work", "about", "contact"] as const).map((label) => (
               <Link
                 key={label}
-                href={label === "work" ? "/work" : `/#${label}`}
+                href={label === "work" ? "/work" : label === "about" ? "/about" : `/#${label}`}
                 data-interactive="true"
                 className="cs-nav-link cursor-none"
               >

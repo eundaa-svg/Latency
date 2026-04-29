@@ -137,19 +137,21 @@ export default function Page() {
             >
               work
             </Link>
-            {/* about / contact — placeholder anchors until pages exist */}
-            {(["about", "contact"] as const).map((item) => (
-              <a
-                key={item}
-                href={`#${item}`}
+            {[
+              { label: "about",   href: "/about" },
+              { label: "contact", href: "/#contact" },
+            ].map(({ label, href }) => (
+              <Link
+                key={label}
+                href={href}
                 data-interactive="true"
                 className="cursor-none transition-opacity duration-150"
                 style={{ color: "var(--fg-muted)" }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "var(--fg)")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "var(--fg-muted)")}
               >
-                {item}
-              </a>
+                {label}
+              </Link>
             ))}
           </div>
         </motion.nav>

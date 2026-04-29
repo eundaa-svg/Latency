@@ -55,7 +55,7 @@ function WorkCanvasInner() {
         <nav className="flex items-center gap-5 font-[family-name:var(--font-mono)] text-[11px] tracking-[0.12em] uppercase">
           {[
             { label: "work",    href: "/work" },
-            { label: "about",   href: "/#about" },
+            { label: "about",   href: "/about" },
             { label: "contact", href: "/#contact" },
           ].map(({ label, href }) => (
             <Link
