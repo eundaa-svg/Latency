@@ -31,6 +31,8 @@ export interface Work {
   description?: string;
   role?: string;
   client?: string;
+  type?: string;        // "video" for embedded video works
+  youtubeId?: string;
   videoUrl?: string;
   posterUrl?: string;
 }
@@ -46,6 +48,8 @@ interface RawWork {
   description?: string;
   role?: string;
   client?: string;
+  type?: string;
+  youtubeId?: string;
   videoUrl?: string;
   posterUrl?: string;
   [key: string]: unknown;
@@ -78,6 +82,8 @@ export function getWorks(): Work[] {
       description:  w.description,
       role:         w.role,
       client:       w.client,
+      type:         w.type,
+      youtubeId:    w.youtubeId,
       videoUrl:     w.videoUrl,
       posterUrl:    w.posterUrl,
     }));

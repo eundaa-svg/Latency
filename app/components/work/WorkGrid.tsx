@@ -113,6 +113,23 @@ const WorkCard = memo(function WorkCard({ work, index, eager, onSelect }: CardPr
               loading={eager ? undefined : "lazy"}
             />
           )}
+          {/* Video badge — shown for works with type: "video" */}
+          {work.type === "video" && (
+            <div
+              className="absolute top-2.5 right-2.5 pointer-events-none"
+              style={{
+                background: "rgba(0,0,0,0.55)",
+                borderRadius: 3,
+                padding: "3px 6px",
+                fontSize: 11,
+                fontFamily: "var(--font-mono)",
+                color: "rgba(255,255,255,0.85)",
+                letterSpacing: "0.06em",
+              }}
+            >
+              ▶
+            </div>
+          )}
           {/* Hover overlay — CSS-only, no JS */}
           <div
             className="wg-thumb-overlay absolute inset-0 pointer-events-none"
