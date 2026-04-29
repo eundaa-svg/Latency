@@ -14,7 +14,7 @@ export default function WorldOceanForumPage() {
         year:         "2025",
         titleKo:      "세계해양포럼 포스터",
         titleEn:      "World Ocean Forum Poster — Beyond a wave of uncertainty",
-        imageSrc:     "/images/works/world-ocean-forum.jpg",
+        imageSrc:     "/images/works/world-ocean-forum.png",
         imageAlt:     "세계해양포럼 포스터 — 파도를 넘어 나아가는 시점",
         imageWidth:   1980,
         imageHeight:  2800,
