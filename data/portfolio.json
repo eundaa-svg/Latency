@@ -34,6 +34,15 @@
       "accentColor": "#1A0533"
     },
     {
+      "id": "gangwon-sports-festival",
+      "title": "강원특별자치도민 체육대회 포스터",
+      "categoryId": "graphic",
+      "thumbnail": "/images/works/kwc.jpeg",
+      "year": "2025",
+      "order": 4,
+      "accentColor": "#0A3D8F"
+    },
+    {
       "id": "the-red-line",
       "title": "The Red Line",
       "categoryId": "advertising-design",
