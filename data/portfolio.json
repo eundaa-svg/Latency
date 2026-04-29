@@ -1,25 +1,19 @@
 {
   "categories": [
-    {
-      "id": "uiux",
-      "name": "UI/UX",
-      "order": 1
-    },
-    {
-      "id": "xr",
-      "name": "XR Design",
-      "order": 2
-    },
-    {
-      "id": "graphic",
-      "name": "Graphic Design",
-      "order": 3
-    },
-    {
-      "id": "advertising-design",
-      "name": "Advertising design",
-      "order": 4
-    }
+    { "id": "uiux",             "name": "UI/UX",             "order": 1 },
+    { "id": "xr",               "name": "XR Design",          "order": 2 },
+    { "id": "graphic",          "name": "Graphic Design",     "order": 3 },
+    { "id": "advertising-design","name": "Advertising design","order": 4 }
   ],
-  "works": []
+  "works": [
+    {
+      "id": "arbor-day-80th",
+      "title": "식목일 80주년 포스터",
+      "categoryId": "graphic",
+      "thumbnail": "/images/works/arbor-day-80th.png",
+      "year": "2025",
+      "order": 1,
+      "accentColor": "#2D6A4F"
+    }
+  ]
 }
