@@ -9,8 +9,17 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        mono: ["JetBrains Mono", "IBM Plex Mono", "Menlo", "monospace"],
-        sans: ["Inter", "Geist", "system-ui", "sans-serif"],
+        sans: [
+          "Pretendard Variable", "Pretendard",
+          "-apple-system", "BlinkMacSystemFont", "system-ui",
+          "Apple SD Gothic Neo", "Noto Sans KR", "sans-serif",
+        ],
+        // mono kept as alias to sans — var(--font-mono) already remapped in globals.css
+        mono: [
+          "Pretendard Variable", "Pretendard",
+          "-apple-system", "BlinkMacSystemFont", "system-ui",
+          "Apple SD Gothic Neo", "Noto Sans KR", "sans-serif",
+        ],
       },
       colors: {
         // CSS-variable tokens — use as bg-bg, text-fg, border-border, etc.

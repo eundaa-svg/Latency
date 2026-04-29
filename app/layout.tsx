@@ -1,19 +1,6 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "./components/AppShell";
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  weight: ["300", "400", "500"],
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  weight: ["100", "300", "400", "500"],
-});
 
 export const metadata: Metadata = {
   title: "LATENCY — DAN",
@@ -26,8 +13,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${jetbrainsMono.variable} ${inter.variable} antialiased`}>
+    <html lang="ko">
+      <head>
+        {/* Pretendard Variable — Korean + Latin, Helvetica-style sans-serif */}
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+        />
+      </head>
+      <body className="antialiased">
         <AppShell>{children}</AppShell>
       </body>
     </html>

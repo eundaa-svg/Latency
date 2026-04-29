@@ -38,8 +38,13 @@
   --accent-glow:  rgba(0, 81, 255, 0.15);
   --border:       #1A1A1A;
 
-  --font-mono: "JetBrains Mono", "IBM Plex Mono", monospace;
-  --font-sans: "Inter", "Geist", sans-serif;
+  /* Both variables now point to Pretendard — all var(--font-mono) and
+     var(--font-sans) usages throughout the codebase automatically get
+     the new typeface without any component-level changes. */
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+               system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --font-mono: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+               system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
 }
 
 /* ── Cursor ───────────────────────────────────────────────────────────────── */
@@ -58,7 +63,10 @@ html,
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
   overflow-x: hidden;
 }
 
@@ -95,6 +103,16 @@ body {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
 }
+
+/* ── Pretendard tracking override ────────────────────────────────────────── */
+/* Monospace-era classes used tracking 0.12–0.18em for visual rhythm.
+   Pretendard has natural spacing — pull these back for a clean Helvetica feel. */
+.tracking-\[0\.18em\] { letter-spacing: 0.08em; }
+.tracking-\[0\.16em\] { letter-spacing: 0.07em; }
+.tracking-\[0\.14em\] { letter-spacing: 0.06em; }
+.tracking-\[0\.12em\] { letter-spacing: 0.05em; }
+.tracking-\[0\.1em\]  { letter-spacing: 0.04em; }
+.tracking-\[0\.08em\] { letter-spacing: 0.03em; }
 
 /* ── Utilities ───────────────────────────────────────────────────────────── */
 @layer utilities {
