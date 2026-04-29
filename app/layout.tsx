@@ -3,8 +3,12 @@ import "./globals.css";
 import { AppShell } from "./components/AppShell";
 
 export const metadata: Metadata = {
-  title: "LATENCY — DAN",
-  description: "Designer obsessed with timing. The space between action and response.",
+  title: "LATENCY — 다은 / 인터랙션 디자이너",
+  description: "행동과 반응 사이의 시간을 디자인합니다.",
+  openGraph: {
+    title: "LATENCY — 다은 / 인터랙션 디자이너",
+    description: "행동과 반응 사이의 시간을 디자인합니다.",
+  },
 };
 
 export default function RootLayout({

@@ -1,18 +1,3 @@
-/*
- * ─────────────────────────────────────────────────────────────────
- *  LATENCY — DAN  |  Personal Portfolio
- * ─────────────────────────────────────────────────────────────────
- *  SWAP GUIDE:
- *    Avatar image  → replace the <span>DAN</span> in DanWord
- *                    (components/InlineInteraction.tsx) with a real image
- *
- *    Social links  → search "SWAP: links" below and update href values
- *
- *    Clock city    → open components/LiveClock.tsx and replace
- *                    "SEL" with your city code (e.g. "NYC", "TYO", "LON")
- * ─────────────────────────────────────────────────────────────────
- */
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -20,14 +5,13 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   DanWord, BetweenWord, TimingWord, LatencyWord, HatsWord,
-  UiUxWord, LateWord, GraphicDesignWord, AdvertisingWord,
+  UiUxWord, GraphicDesignWord, AdvertisingWord,
   ThingsWord, XrDesignWord, DiscomfortWord,
 } from "./components/InlineInteraction";
 import { LiveClock } from "./components/LiveClock";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-// ─── HERO PARAGRAPH ───────────────────────────────────────────────────────────
 function HeroParagraph() {
   const [visible, setVisible] = useState(false);
 
@@ -38,66 +22,61 @@ function HeroParagraph() {
 
   return (
     <motion.div
-      className="text-[14px] sm:text-[15px] leading-[1.85] font-[family-name:var(--font-mono)]"
+      className="text-[14px] sm:text-[15px] leading-[1.85]"
       style={{ color: "var(--fg)" }}
       initial={{ opacity: 0, y: 6 }}
       animate={visible ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.55, ease: EASE }}
     >
       <p className="mb-5">
-        {"Yo! I\u2019m\u00A0"}
+        안녕하세요,{" "}
         <span data-interactive="true"><DanWord /></span>
-        {". I design the time\u00A0"}
+        입니다. 저는{" "}
         <span data-interactive="true"><BetweenWord /></span>
-        {"\u00A0action and response. My background is in interaction design, but what I really obsess over is\u00A0"}
+        {" "}행동과 반응 사이의 시간을 디자인합니다. 인터랙션 디자인을 기반으로, 무엇이 어떻게 보이는지가 아니라{" "}
         <span data-interactive="true"><TimingWord /></span>
-        {"\u00A0\u2014 not just how things look, but when they happen."}
+        {" "}— 언제, 어떤 타이밍에 일어나는지에 집중합니다.
       </p>
 
       <p className="mb-5">
-        {"I work under the name\u00A0"}
+        {" "}
         <span data-interactive="true"><LatencyWord /></span>
-        {". Most designers look at screens. I look at what\u2019s\u00A0"}
+        라는 이름으로 작업합니다. 대부분의 디자이너가 화면을 바라본다면, 저는 그{" "}
         <span data-interactive="true"><BetweenWord /></span>
-        {"\u00A0them. Fast isn\u2019t the goal. The right timing is."}
+        을 봅니다. 빠름이 목표가 아니라, 적절한 타이밍이 목표입니다.
       </p>
 
       <p>
-        {"I wear many different\u00A0"}
+        다양한{" "}
         <span data-interactive="true"><HatsWord /></span>
-        {". In\u00A0"}
+        을 씁니다.{" "}
         <span data-interactive="true"><UiUxWord /></span>
-        {", I think about when information arrives \u2014 exactly when you need it, not a beat too\u00A0"}
-        <span data-interactive="true"><LateWord /></span>
-        {". In\u00A0"}
+        에서는 정보가 정확히 필요한 순간에 도달하도록 설계합니다.{" "}
         <span data-interactive="true"><GraphicDesignWord /></span>
-        {", visual rhythm guides the eye through silence as much as form. In\u00A0"}
+        에서는 시각적 리듬이 시선을 이끕니다.{" "}
         <span data-interactive="true"><AdvertisingWord /></span>
-        {", a perfectly-timed message and a mistimed one are two completely different\u00A0"}
+        에서, 제대로 된 메시지와 어긋난 메시지는 완전히 다른{" "}
         <span data-interactive="true"><ThingsWord /></span>
-        {". In\u00A0"}
+        입니다.{" "}
         <span data-interactive="true"><XrDesignWord /></span>
-        {", latency between movement and response is the difference between immersion and\u00A0"}
+        에서, 움직임과 반응 사이의 지연은 몰입과{" "}
         <span data-interactive="true"><DiscomfortWord /></span>
-        {"."}
+        을 가르는 경계입니다.
       </p>
 
-      {/* "Scroll or drag" hint — gently pulses */}
       <p
-        className="mt-8 text-[11px] tracking-[0.12em]"
+        className="mt-8 text-[11px] tracking-[0.06em]"
         style={{ color: "var(--fg-muted)", animation: "gentlePulse 3s ease-in-out infinite" }}
       >
-        scroll or drag to explore
+        스크롤하여 둘러보기
       </p>
     </motion.div>
   );
 }
 
-// ─── PAGE ─────────────────────────────────────────────────────────────────────
 export default function Page() {
   return (
     <>
-      {/* ── HERO — full viewport ──────────────────────────────────────── */}
       <section
         className="relative h-[100dvh] flex flex-col overflow-hidden"
         style={{ background: "var(--bg)" }}
@@ -109,35 +88,20 @@ export default function Page() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.45, ease: EASE }}
         >
-          {/* Logo */}
           <div
-            className="flex items-center gap-1.5 font-[family-name:var(--font-mono)] text-[11px] sm:text-[12px] tracking-[0.18em] uppercase"
+            className="flex items-center gap-1.5 text-[11px] sm:text-[12px] tracking-[0.04em] uppercase"
             style={{ color: "var(--fg)" }}
           >
             LATENCY
-            {/* Dot: accent glow pulse instead of step blink */}
             <span
               className="inline-block w-1.5 h-1.5 rounded-full"
-              style={{
-                background: "var(--accent)",
-                animation: "glowPulse 2s ease-in-out infinite",
-              }}
+              style={{ background: "var(--accent)", animation: "glowPulse 2s ease-in-out infinite" }}
             />
           </div>
 
-          {/* Nav links */}
-          <div className="flex items-center gap-5 sm:gap-7 font-[family-name:var(--font-mono)] text-[11px] sm:text-[12px] tracking-[0.12em] uppercase">
-            <Link
-              href="/work"
-              data-interactive="true"
-              className="cursor-none transition-opacity duration-150 focus:outline-none"
-              style={{ color: "var(--fg-muted)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "var(--fg)")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--fg-muted)")}
-            >
-              work
-            </Link>
+          <div className="flex items-center gap-5 sm:gap-7 text-[11px] sm:text-[12px] tracking-[0.04em] uppercase">
             {[
+              { label: "work",    href: "/work" },
               { label: "about",   href: "/about" },
               { label: "contact", href: "/#contact" },
             ].map(({ label, href }) => (
@@ -145,7 +109,7 @@ export default function Page() {
                 key={label}
                 href={href}
                 data-interactive="true"
-                className="cursor-none transition-opacity duration-150"
+                className="cursor-none transition-opacity duration-150 focus:outline-none"
                 style={{ color: "var(--fg-muted)" }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "var(--fg)")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "var(--fg-muted)")}
@@ -156,7 +120,7 @@ export default function Page() {
           </div>
         </motion.nav>
 
-        {/* Hero copy — centered in remaining space */}
+        {/* Hero copy */}
         <div className="flex-1 flex items-center justify-center px-6 sm:px-10 overflow-hidden">
           <div className="w-full max-w-[720px]">
             <HeroParagraph />
@@ -171,9 +135,7 @@ export default function Page() {
           transition={{ duration: 0.45, delay: 0.25, ease: EASE }}
         >
           <LiveClock />
-
-          {/* SWAP: links — update href values */}
-          <div className="flex items-center gap-5 sm:gap-6 font-[family-name:var(--font-mono)] text-[10px] tracking-[0.12em] uppercase">
+          <div className="flex items-center gap-5 sm:gap-6 text-[10px] tracking-[0.06em] uppercase">
             {[
               { label: "twitter", href: "https://twitter.com/" },
               { label: "email",   href: "mailto:dan@latency.work" },
@@ -185,14 +147,8 @@ export default function Page() {
                 data-interactive="true"
                 className="transition-all duration-150"
                 style={{ color: "var(--fg-muted)", opacity: 0.5 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.opacity = "1";
-                  e.currentTarget.style.color = "var(--fg)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.opacity = "0.5";
-                  e.currentTarget.style.color = "var(--fg-muted)";
-                }}
+                onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.color = "var(--fg)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.5"; e.currentTarget.style.color = "var(--fg-muted)"; }}
               >
                 {label}
               </a>
@@ -200,7 +156,6 @@ export default function Page() {
           </div>
         </motion.footer>
       </section>
-
     </>
   );
 }

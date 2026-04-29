@@ -3,41 +3,24 @@ import { AboutGraphic } from "@/app/components/AboutGraphic";
 
 export const metadata = {
   title: "About — LATENCY",
-  description: "I design the time between action and response.",
+  description: "행동과 반응 사이의 시간을 디자인합니다.",
 };
 
-// ── Two-column section ────────────────────────────────────────────────────────
-
-function AboutSection({
-  label,
-  children,
-  first = false,
-}: {
-  label: string;
-  children: React.ReactNode;
-  first?: boolean;
-}) {
+function AboutSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div
       className="flex flex-col md:flex-row gap-8 md:gap-16 py-16 md:py-24"
       style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
     >
       <div className="md:w-48 shrink-0">
-        <span
-          className="text-[11px] tracking-[0.1em] uppercase"
-          style={{ color: "var(--fg-muted)" }}
-        >
+        <span className="text-[11px] tracking-[0.1em] uppercase" style={{ color: "var(--fg-muted)" }}>
           {label}
         </span>
       </div>
-      <div className="flex-1 min-w-0">
-        {children}
-      </div>
+      <div className="flex-1 min-w-0">{children}</div>
     </div>
   );
 }
-
-// ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function AboutPage() {
   return (
@@ -87,47 +70,54 @@ export default function AboutPage() {
             className="mt-10 text-[13px] tracking-[0.04em]"
             style={{ color: "var(--fg-muted)" }}
           >
-            I design the time between action and response.
+            행동과 반응 사이의 시간을 디자인합니다.
           </p>
         </section>
 
-        {/* ── SECTIONS 2–5 ────────────────────────────────────────────── */}
+        {/* ── SECTIONS ────────────────────────────────────────────────── */}
         <div className="px-6 sm:px-10 md:px-16" style={{ maxWidth: 1200, margin: "0 auto" }}>
 
-          {/* WHO I AM */}
-          <AboutSection label="Who I Am">
-            <div
-              className="flex flex-col gap-6 text-[17px] sm:text-[19px] leading-[1.65]"
-              style={{ color: "var(--fg-muted)" }}
-            >
+          {/* INTRO */}
+          <AboutSection label="Intro">
+            <div className="flex flex-col gap-6 text-[17px] sm:text-[19px] leading-[1.65]" style={{ color: "var(--fg-muted)" }}>
+              <p style={{ color: "var(--fg)", fontWeight: 500 }}>안녕하세요, 디자이너 다은입니다.</p>
               <p>
-                버튼을 누른 순간과 화면이 응답하는 순간,<br />
-                그 사이에 존재하는 시간을 설계합니다.
-              </p>
-              <p>
-                대부분의 디자이너가 스크린을 본다면,<br />
-                저는 스크린과 스크린 사이를 봅니다.<br />
-                이 순간에서 다음 순간으로 넘어갈 때,<br />
-                무엇이 흐르고 무엇이 끊기는지.
+                저는 행동과 반응 사이의 시간을 디자인합니다.<br />
+                단순히 어떻게 보이는지가 아니라, 언제 일어나는지에 집중합니다.
               </p>
             </div>
           </AboutSection>
 
-          {/* WHAT I DESIGN */}
-          <AboutSection label="What I Design">
+          {/* PERSPECTIVE */}
+          <AboutSection label="Perspective">
+            <div className="flex flex-col gap-6 text-[17px] sm:text-[19px] leading-[1.65]" style={{ color: "var(--fg-muted)" }}>
+              <p>
+                저는 'LATENCY'라는 관점으로 작업합니다.<br />
+                대부분의 디자이너가 화면을 바라본다면,<br />
+                저는 그 사이에 존재하는 순간을 설계합니다.
+              </p>
+            </div>
+          </AboutSection>
+
+          {/* PRACTICE */}
+          <AboutSection label="Practice">
             <div className="flex flex-col gap-12">
               {[
                 {
-                  title: "INTERACTION",
-                  desc:  "움직임의 타이밍 — 애니메이션이 언제 시작하고, 얼마나 머물고, 어떻게 끝나는지.",
+                  title: "UI/UX",
+                  desc:  "정보가 사용자에게 도달하는 '순간'을 설계합니다.",
                 },
                 {
-                  title: "UX",
-                  desc:  "정보를 주는 타이밍 — 사용자가 필요로 하기 직전에, 딱 그 순간에 나타나는 것.",
+                  title: "GRAPHIC DESIGN",
+                  desc:  "시각적 리듬과 여백을 통해 시선을 조율합니다.",
                 },
                 {
-                  title: "FLOW",
-                  desc:  "다음 단계로 넘어가는 타이밍 — 흐름이 끊기지 않고 자연스럽게 이어지는 것.",
+                  title: "ADVERTISING",
+                  desc:  "메시지가 전달되는 타이밍에 따라 전혀 다른 결과가 만들어집니다.",
+                },
+                {
+                  title: "XR DESIGN",
+                  desc:  "반응의 지연이 몰입과 이탈을 결정합니다.",
                 },
               ].map(({ title, desc }) => (
                 <div key={title}>
@@ -137,10 +127,7 @@ export default function AboutPage() {
                   >
                     {title}
                   </h3>
-                  <p
-                    className="text-[16px] sm:text-[17px] leading-[1.65]"
-                    style={{ color: "var(--fg-muted)" }}
-                  >
+                  <p className="text-[16px] sm:text-[17px] leading-[1.65]" style={{ color: "var(--fg-muted)" }}>
                     {desc}
                   </p>
                 </div>
@@ -148,16 +135,19 @@ export default function AboutPage() {
             </div>
           </AboutSection>
 
-          {/* LATENCY */}
-          <AboutSection label="Latency">
-            <p
-              className="text-[40px] sm:text-[56px] leading-[1.1] tracking-tight"
-              style={{ fontWeight: 600, color: "var(--fg)" }}
-            >
-              반응까지 걸리는 시간.
-            </p>
-          </AboutSection>
+        </div>
 
+        {/* ── CLOSING ─────────────────────────────────────────────────── */}
+        <div
+          className="px-6 sm:px-10 md:px-16 py-20 md:py-28"
+          style={{ maxWidth: 1200, margin: "0 auto", borderTop: "1px solid rgba(255,255,255,0.08)" }}
+        >
+          <p
+            className="text-[32px] sm:text-[48px] leading-[1.2] tracking-tight"
+            style={{ fontWeight: 600, color: "var(--fg)" }}
+          >
+            저는 경험이 완성되는 순간을 설계합니다.
+          </p>
         </div>
 
         {/* ── CONTACT ─────────────────────────────────────────────────── */}
@@ -186,10 +176,7 @@ export default function AboutPage() {
           className="px-6 sm:px-10 py-8 flex items-center justify-between"
           style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
         >
-          <span
-            className="text-[11px] tracking-[0.06em]"
-            style={{ color: "var(--fg-muted)", opacity: 0.4 }}
-          >
+          <span className="text-[11px] tracking-[0.06em]" style={{ color: "var(--fg-muted)", opacity: 0.4 }}>
             © 2025 LATENCY
           </span>
           <Link

@@ -92,7 +92,7 @@ function WorkCanvasInner() {
               className="mt-12 font-[family-name:var(--font-mono)] text-[10px] tabular-nums"
               style={{ color: "var(--fg-muted)", opacity: 0.28 }}
             >
-              {filteredWorks.length} {filteredWorks.length === 1 ? "work" : "works"}
+              작업 {filteredWorks.length}
             </p>
           )}
         </main>
