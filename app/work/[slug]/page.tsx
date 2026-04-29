@@ -1,35 +1,32 @@
-// Server Component — exports generateStaticParams for static pre-rendering.
-// All animated/interactive content is delegated to ProjectDetailClient.
-
 import { notFound } from "next/navigation";
-import { PROJECTS } from "@/data/projects";
+import { getWorks, getWorkById } from "@/lib/db";
 import { ProjectDetailClient } from "./ProjectDetailClient";
 
 interface PageProps {
   params: { slug: string };
 }
 
-// Pre-render every project page at build time.
-export function generateStaticParams() {
-  return PROJECTS.map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  const works = await getWorks();
+  return works.map((w) => ({ slug: w.id }));
 }
 
-// Per-page metadata
-export function generateMetadata({ params }: PageProps) {
-  const project = PROJECTS.find((p) => p.slug === params.slug);
-  if (!project) return {};
+export async function generateMetadata({ params }: PageProps) {
+  const work = await getWorkById(params.slug);
+  if (!work) return {};
   return {
-    title: `${project.title} — LATENCY`,
-    description: project.description.slice(0, 155),
+    title: `${work.title} — LATENCY`,
+    description: work.description.slice(0, 155),
   };
 }
 
-export default function WorkDetailPage({ params }: PageProps) {
-  const project = PROJECTS.find((p) => p.slug === params.slug);
-  if (!project) notFound();
+export default async function WorkDetailPage({ params }: PageProps) {
+  const works = await getWorks();
+  const work  = works.find((w) => w.id === params.slug);
+  if (!work) notFound();
 
-  const currentIndex = PROJECTS.indexOf(project);
-  const nextProject = PROJECTS[(currentIndex + 1) % PROJECTS.length];
+  const currentIndex = works.indexOf(work);
+  const nextWork     = works[(currentIndex + 1) % works.length] ?? work;
 
-  return <ProjectDetailClient project={project} nextProject={nextProject} />;
+  return <ProjectDetailClient work={work} nextWork={nextWork} />;
 }

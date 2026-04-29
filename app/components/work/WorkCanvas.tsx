@@ -11,53 +11,51 @@
  *   The list stays legible on top while the hovered work fills the canvas.
  *
  * HOW TO ADD REAL VIDEO:
- *   In data/projects.ts, add:
- *     videoUrl: "https://player.vimeo.com/progressive_redirect/...",
- *     posterUrl: "/public/posters/your-poster.jpg",
+ *   In data/portfolio.json set a work's videoUrl field:
+ *     "videoUrl": "https://player.vimeo.com/progressive_redirect/...",
+ *     "posterUrl": "/uploads/your-poster.jpg"
  *   ProjectBackground auto-switches from CSS placeholder to <video>.
  *
  * TIMING CONSTANTS (tune here, nowhere else):
- *   MEDIA_FADE      = 600ms  — background enter/exit
- *   WORDMARK_DELAY  = 150ms  — wordmark lags behind media (in BackgroundWordmark)
- *   LIST_STAGGER    = 65ms   — max stagger between list items (in ProjectList)
- *   IDLE_CYCLE      = 4000ms — wordmark cycling interval (in BackgroundWordmark)
+ *   MEDIA_FADE   = 600ms  — background enter/exit (ProjectBackground)
+ *   LIST_STAGGER = 65ms   — max stagger between list items (ProjectList)
+ *
+ * DATA FLOW:
+ *   app/work/page.tsx (server) reads portfolio.json →
+ *   passes {works, categories} as props →
+ *   WorkCanvasProvider holds them in context →
+ *   all children consume via useWorkCanvas()
  *
  * STATES:
- *   A — Idle: wordmark cycles, list at 100%
+ *   A — Idle: list at 100%, no background
  *   B — Hover: media fades in, list redistributes opacity
  *   C — Unhover: media fades out, list returns to 100%
- *   D — Cross-hover: A/B layers crossfade, no intermediate idle
+ *   D — Cross-hover: A/B layers crossfade seamlessly
  *   E — Committed (click): controls visible, URL updates, sound unlocks
  *   F — Keyboard: Arrow Up/Down moves through list, Enter commits, Esc closes
  * ══════════════════════════════════════════════════════════
  */
 
-import {
-  useState,
-  useEffect,
-  useMemo,
-  useRef,
-  useCallback,
-} from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { PROJECTS, type Project } from "@/data/projects";
 import { WorkCanvasProvider, useWorkCanvas } from "./WorkCanvasContext";
 import { ProjectBackground } from "./ProjectBackground";
-import { BackgroundWordmark } from "./BackgroundWordmark";
 import { ProjectList } from "./ProjectList";
 import { HoverBreadcrumb } from "./HoverBreadcrumb";
 import { CategoryStack } from "./CategoryStack";
-import { MetaNav } from "./MetaNav";
 import { MediaControls } from "./MediaControls";
 import { LiveClock } from "@/app/components/LiveClock";
+import type { Work, PortfolioCategory } from "@/lib/db";
 
-const EASE = [0.22, 1, 0.36, 1] as const;
+// ── Entry point ───────────────────────────────────────────────────────────────
+interface WorkCanvasProps {
+  works:      Work[];
+  categories: PortfolioCategory[];
+}
 
-// ── Entry point — wraps inner component with Context provider ─────────────────
-export function WorkCanvas() {
+export function WorkCanvas({ works, categories }: WorkCanvasProps) {
   return (
-    <WorkCanvasProvider>
+    <WorkCanvasProvider works={works} categories={categories}>
       <WorkCanvasInner />
     </WorkCanvasProvider>
   );
@@ -76,101 +74,61 @@ function useReducedMotion() {
   return reduced;
 }
 
-// ── Double-buffer crossfade layer type ────────────────────────────────────────
-type Layer = { projectId: string | null; visible: boolean };
+// ── Double-buffer crossfade layer ─────────────────────────────────────────────
+type Layer = { workId: string | null; visible: boolean };
 
-// ── Inner canvas (consumes Context) ──────────────────────────────────────────
+// ── Inner canvas ──────────────────────────────────────────────────────────────
 function WorkCanvasInner() {
-  const {
-    hoveredId,
-    activeId,
-    filterCategory,
-    isSoundOn,
-    close,
-  } = useWorkCanvas();
-
+  const { works, hoveredId, activeId, filterCategory, isSoundOn, close } = useWorkCanvas();
   const reduced = useReducedMotion();
 
-  // Filtered project list
-  const filteredProjects = useMemo<Project[]>(() => {
-    if (filterCategory === "ALL") return PROJECTS;
-    return PROJECTS.filter((p) => p.category === filterCategory);
-  }, [filterCategory]);
+  const filteredWorks = useMemo<Work[]>(() => {
+    if (filterCategory === "ALL") return works;
+    return works.filter((w) => w.categoryId === filterCategory);
+  }, [works, filterCategory]);
 
-  // The project whose background is "displayed" — activeId locks it
   const displayId = activeId ?? hoveredId;
 
-  // ── Double-buffer crossfade ───────────────────────────────────────────────
-  // Two layers (A / B) alternate as the active one.
-  // On each displayId change: inactive layer loads new project and fades in,
-  // active layer fades out. Swap roles. Gives State D (crossfade) for free.
-  const [layerA, setLayerA] = useState<Layer>({ projectId: null, visible: false });
-  const [layerB, setLayerB] = useState<Layer>({ projectId: null, visible: false });
+  // Two always-mounted layers alternate on each displayId change.
+  // This gives seamless overlapping crossfades (State D) for free.
+  const [layerA, setLayerA] = useState<Layer>({ workId: null, visible: false });
+  const [layerB, setLayerB] = useState<Layer>({ workId: null, visible: false });
   const activeLayerRef = useRef<"A" | "B">("A");
 
   useEffect(() => {
     if (!displayId) {
-      setLayerA({ projectId: null, visible: false });
-      setLayerB({ projectId: null, visible: false });
+      setLayerA({ workId: null, visible: false });
+      setLayerB({ workId: null, visible: false });
       return;
     }
-
-    // Find inactive layer and load new project into it, fade out current
     if (activeLayerRef.current === "A") {
-      setLayerB({ projectId: displayId, visible: true });
+      setLayerB({ workId: displayId, visible: true });
       setLayerA((prev) => ({ ...prev, visible: false }));
       activeLayerRef.current = "B";
     } else {
-      setLayerA({ projectId: displayId, visible: true });
+      setLayerA({ workId: displayId, visible: true });
       setLayerB((prev) => ({ ...prev, visible: false }));
       activeLayerRef.current = "A";
     }
   }, [displayId]);
 
-  // Project objects for background layers
-  const projectA = layerA.projectId ? PROJECTS.find((p) => p.slug === layerA.projectId) ?? null : null;
-  const projectB = layerB.projectId ? PROJECTS.find((p) => p.slug === layerB.projectId) ?? null : null;
+  const workA = layerA.workId ? works.find((w) => w.id === layerA.workId) ?? null : null;
+  const workB = layerB.workId ? works.find((w) => w.id === layerB.workId) ?? null : null;
+  const activeWork = activeId ? works.find((w) => w.id === activeId) ?? null : null;
 
-  const activeProject = activeId ? PROJECTS.find((p) => p.slug === activeId) ?? null : null;
-
-  // ── Esc handler for uncommitted hover states ──────────────────────────────
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
-    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [close]);
 
   return (
-    <div
-      className="fixed inset-0 overflow-hidden"
-      style={{ background: "var(--bg)" }}
-      role="main"
-    >
+    <div className="fixed inset-0 overflow-hidden" style={{ background: "var(--bg)" }} role="main">
+
       {/* ── Z-1: Fullscreen background media (two layers for crossfade) ── */}
       <div className="absolute inset-0" aria-hidden>
-        <ProjectBackground
-          project={projectA}
-          visible={layerA.visible}
-          soundOn={isSoundOn}
-          reduced={reduced}
-        />
-        <ProjectBackground
-          project={projectB}
-          visible={layerB.visible}
-          soundOn={isSoundOn}
-          reduced={reduced}
-        />
-      </div>
-
-      {/* ── Z-2: Giant background wordmark ────────────────────────────── */}
-      <div className="absolute inset-0 z-[2]">
-        <BackgroundWordmark
-          hoveredId={displayId}
-          filteredProjects={filteredProjects}
-          reduced={reduced}
-        />
+        <ProjectBackground work={workA} visible={layerA.visible} soundOn={isSoundOn} reduced={reduced} />
+        <ProjectBackground work={workB} visible={layerB.visible} soundOn={isSoundOn} reduced={reduced} />
       </div>
 
       {/* ── Z-3: UI layer ─────────────────────────────────────────────── */}
@@ -181,7 +139,6 @@ function WorkCanvasInner() {
 
           {/* Top-left: Logo + category stack + hover breadcrumb */}
           <div className="flex flex-col gap-6">
-            {/* Logo */}
             <Link
               href="/"
               data-interactive="true"
@@ -195,18 +152,12 @@ function WorkCanvasInner() {
               />
             </Link>
 
-            {/* Category filter — always visible */}
             <CategoryStack />
 
-            {/* Hover breadcrumb — fades in on hover */}
-            <HoverBreadcrumb
-              hoveredId={hoveredId ?? activeId}
-              projects={filteredProjects}
-              reduced={reduced}
-            />
+            <HoverBreadcrumb hoveredId={hoveredId ?? activeId} works={filteredWorks} reduced={reduced} />
           </div>
 
-          {/* Top-right: nav links (hidden when committed — controls replace them) */}
+          {/* Top-right: nav (hidden when a project is committed) */}
           {!activeId && (
             <nav className="flex items-center gap-5 font-[family-name:var(--font-mono)] text-[11px] tracking-[0.12em] uppercase">
               {[
@@ -231,50 +182,30 @@ function WorkCanvasInner() {
         </div>
 
         {/* ─ MEDIA CONTROLS (State E) ────────────────────────────────── */}
-        <MediaControls
-          activeProject={activeProject}
-          allProjects={filteredProjects}
-          reduced={reduced}
-        />
+        <MediaControls activeWork={activeWork} allWorks={filteredWorks} reduced={reduced} />
 
-        {/* ─ CENTER: Project list ─────────────────────────────────────── */}
+        {/* ─ CENTER: Work list (or empty state) ──────────────────────── */}
         <div className="absolute inset-0 flex items-center pointer-events-auto">
-          <div
-            className="pl-[8vw] pr-[8vw] w-full max-w-[820px]"
-            style={{ maxHeight: "80vh", overflowY: "auto" }}
-          >
-            <ProjectList projects={filteredProjects} reduced={reduced} />
+          <div className="pl-[8vw] pr-[8vw] w-full max-w-[820px] overflow-hidden">
+            <ProjectList works={filteredWorks} reduced={reduced} />
           </div>
         </div>
 
         {/* ─ BOTTOM ───────────────────────────────────────────────────── */}
         <div className="absolute bottom-0 inset-x-0 flex items-end justify-between px-8 sm:px-10 pb-6 sm:pb-8 pointer-events-auto">
-
-          {/* Bottom-left: live clock / location */}
-          {!activeId && (
-            <div className="flex flex-col gap-0.5">
-              <LiveClock />
-            </div>
-          )}
-
-          {/* Bottom-center: MetaNav strip */}
-          <div className="flex-1 flex justify-center px-8">
-            <MetaNav />
-          </div>
-
-          {/* Bottom-right: project count or empty (controls shown by MediaControls when committed) */}
+          {!activeId && <LiveClock />}
+          <div className="flex-1" />
           {!activeId && (
             <span
               className="font-[family-name:var(--font-mono)] text-[10px] tabular-nums"
               style={{ color: "var(--fg-muted)", opacity: 0.35 }}
             >
-              {filteredProjects.length} works
+              {filteredWorks.length} {filteredWorks.length === 1 ? "work" : "works"}
             </span>
           )}
         </div>
       </div>
 
-      {/* Keyframe for logo glow */}
       <style>{`
         @keyframes glowPulse {
           0%, 100% { opacity: 0.6; box-shadow: 0 0 4px rgba(0,81,255,0.35); }

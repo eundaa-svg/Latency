@@ -7,7 +7,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { LoadingScreen } from "./LoadingScreen";
 import { GrainOverlay } from "./GrainOverlay";
-import { CursorTracker } from "./CursorTracker";
 import { CustomCursor } from "./CustomCursor";
 
 const SESSION_KEY = "latency_loaded";
@@ -38,7 +37,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Page-global overlays */}
       <GrainOverlay />
-      <CursorTracker />
       <CustomCursor />
 
       {/* Main content — fades in after loader exits */}

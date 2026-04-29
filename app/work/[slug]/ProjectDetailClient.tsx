@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import type { Project } from "@/data/projects";
+import type { Work } from "@/lib/db";
 import { LiveClock } from "@/app/components/LiveClock";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -17,8 +17,8 @@ const SOCIAL = [
 ] as const;
 
 interface Props {
-  project: Project;
-  nextProject: Project;
+  work: Work;
+  nextWork: Work;
 }
 
 // ── Scroll-reveal image ────────────────────────────────────────────────────────
@@ -71,7 +71,7 @@ function MetaRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function ProjectDetailClient({ project, nextProject }: Props) {
+export function ProjectDetailClient({ work, nextWork }: Props) {
   const [nextHovered, setNextHovered] = useState(false);
 
   return (
@@ -139,12 +139,12 @@ export function ProjectDetailClient({ project, nextProject }: Props) {
           style={{
             aspectRatio: "16 / 9",
             maxHeight: "80vh",
-            background: project.accentColor,
+            background: work.accentColor,
           }}
         >
           <Image
-            src={project.images[0]}
-            alt={project.title}
+            src={work.images[0]}
+            alt={work.title}
             fill
             priority
             className="object-cover"
@@ -166,7 +166,7 @@ export function ProjectDetailClient({ project, nextProject }: Props) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.15, ease: EASE }}
             >
-              {project.title}
+              {work.title}
             </motion.h1>
             <motion.p
               className="font-[family-name:var(--font-mono)] text-[13px] sm:text-[14px] mt-3 tracking-[0.08em]"
@@ -175,7 +175,7 @@ export function ProjectDetailClient({ project, nextProject }: Props) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.22, ease: EASE }}
             >
-              {project.year} · {project.category} · {project.client}
+              {work.year} · {work.category} · {work.client ?? ""}
             </motion.p>
           </div>
         </div>
@@ -190,10 +190,10 @@ export function ProjectDetailClient({ project, nextProject }: Props) {
             transition={{ duration: 0.5, delay: 0.1, ease: EASE }}
           >
             <div className="lg:sticky lg:top-24">
-              <MetaRow label="role"     value={project.role} />
-              <MetaRow label="year"     value={project.year} />
-              <MetaRow label="client"   value={project.client} />
-              <MetaRow label="category" value={project.category} />
+              <MetaRow label="role"     value={work.role} />
+              <MetaRow label="year"     value={work.year} />
+              <MetaRow label="client"   value={work.client ?? ""} />
+              <MetaRow label="category" value={work.category} />
             </div>
           </motion.aside>
 
@@ -208,16 +208,16 @@ export function ProjectDetailClient({ project, nextProject }: Props) {
               className="font-[family-name:var(--font-mono)] text-[14px] sm:text-[15px] leading-[1.85] mb-16 max-w-[640px]"
               style={{ color: "var(--fg)" }}
             >
-              {project.description}
+              {work.description}
             </p>
 
             {/* Images (skip the hero) */}
             <div className="flex flex-col" style={{ gap: 80 }}>
-              {project.images.slice(1).map((src, i) => (
+              {work.images.slice(1).map((src, i) => (
                 <RevealImage
                   key={src}
                   src={src}
-                  alt={`${project.title} — image ${i + 2}`}
+                  alt={`${work.title} — image ${i + 2}`}
                   index={i}
                 />
               ))}
@@ -237,7 +237,7 @@ export function ProjectDetailClient({ project, nextProject }: Props) {
             next project
           </p>
           <Link
-            href={`/work/${nextProject.slug}`}
+            href={`/work/${nextWork.id}`}
             data-interactive="true"
             className="inline-flex items-center gap-4 group"
             onMouseEnter={() => setNextHovered(true)}
@@ -249,7 +249,7 @@ export function ProjectDetailClient({ project, nextProject }: Props) {
               animate={{ x: nextHovered ? 4 : 0 }}
               transition={{ duration: 0.2, ease: EASE }}
             >
-              {nextProject.title}
+              {nextWork.title}
             </motion.span>
             <motion.span
               className="font-[family-name:var(--font-mono)] text-[18px] sm:text-[22px]"
@@ -264,7 +264,7 @@ export function ProjectDetailClient({ project, nextProject }: Props) {
             className="font-[family-name:var(--font-mono)] text-[11px] mt-2"
             style={{ color: "var(--fg-muted)", opacity: 0.35 }}
           >
-            {nextProject.year} · {nextProject.category}
+            {nextWork.year} · {nextWork.category}
           </p>
         </div>
 

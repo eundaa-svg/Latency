@@ -7,13 +7,15 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import type { Category } from "@/data/projects";
+import type { Work, PortfolioCategory } from "@/lib/db";
 
-export type FilterCategory = Category | "ALL";
+export type FilterCategory = string; // category id or "ALL"
 
 export interface WorkCanvasCtx {
+  works:          Work[];
+  categories:     PortfolioCategory[];
   hoveredId:      string | null;
-  activeId:       string | null;   // committed (clicked)
+  activeId:       string | null;
   filterCategory: FilterCategory;
   isSoundOn:      boolean;
   setHovered:     (id: string | null) => void;
@@ -25,15 +27,19 @@ export interface WorkCanvasCtx {
 
 const Ctx = createContext<WorkCanvasCtx | null>(null);
 
-export function WorkCanvasProvider({ children }: { children: ReactNode }) {
+interface ProviderProps {
+  children:   ReactNode;
+  works:      Work[];
+  categories: PortfolioCategory[];
+}
+
+export function WorkCanvasProvider({ children, works, categories }: ProviderProps) {
   const [hoveredId,      setHoveredId]      = useState<string | null>(null);
   const [activeId,       setActiveId]       = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<FilterCategory>("ALL");
   const [isSoundOn,      setIsSoundOn]      = useState(false);
 
   const setHovered = useCallback((id: string | null) => {
-    // When a project is committed, hovering others doesn't clear to null
-    // (background stays locked to activeId via displayId in WorkCanvas)
     setHoveredId(id);
   }, []);
 
@@ -59,6 +65,7 @@ export function WorkCanvasProvider({ children }: { children: ReactNode }) {
 
   return (
     <Ctx.Provider value={{
+      works, categories,
       hoveredId, activeId, filterCategory, isSoundOn,
       setHovered, commit, close, setFilter, toggleSound,
     }}>
