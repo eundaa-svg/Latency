@@ -6,7 +6,8 @@ export const metadata = {
   description: "Selected works by DAN.",
 };
 
-export default async function WorkPage() {
-  const [works, categories] = await Promise.all([getWorks(), getCategories()]);
+export default function WorkPage() {
+  const works      = getWorks();
+  const categories = getCategories();
   return <WorkCanvas works={works} categories={categories} />;
 }

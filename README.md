@@ -3,62 +3,83 @@
 ## Getting Started
 
 ```bash
-cp .env.local.example .env.local   # set ADMIN_PASSWORD and ADMIN_ENABLED=true
 npm install
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Admin Panel
+## Adding a Work
 
-Visit `/admin/login` and enter your `ADMIN_PASSWORD` from `.env.local`.
+### 1. Register in portfolio.json
 
-| Route | Purpose |
-|---|---|
-| `/admin` | Dashboard + Publish button |
-| `/admin/works` | Add / edit / reorder works |
-| `/admin/works/new` | Add a new work |
-| `/admin/categories` | Manage categories |
+Add an entry to `data/portfolio.json` → `works` array:
 
-## Publishing Changes to Vercel
+```json
+{
+  "id": "my-project",
+  "title": "My Project.",
+  "categoryId": "uiux",
+  "thumbnail": "/images/my-project/thumb.jpg",
+  "year": "2025",
+  "order": 1,
+  "accentColor": "#0051FF"
+}
+```
 
-Content edits (works, categories, uploaded images) are saved to `data/portfolio.json`
-and `public/uploads/` on your local machine. Vercel only reflects what's in git.
+`id` is also used as the URL slug (`/work/my-project`).
 
-**Option A — Admin UI (recommended)**
-1. Make changes in the admin panel
-2. Go to `/admin` and click **"Publish to Vercel →"**
-3. Vercel detects the push and rebuilds in ~1 minute
+### 2. Create the case study page
 
-**Option B — Terminal**
+Create `app/work/my-project/page.tsx` and write the case study directly in code.
+Next.js static routes take precedence over the dynamic `[slug]` catch-all,
+so the file at the exact slug path will always be used.
+
+### 3. Add images
+
+Put images in `public/images/my-project/` and reference them as `/images/my-project/thumb.jpg`.
+
+### 4. Deploy
+
 ```bash
-npm run admin:publish
+git add .
+git commit -m "feat: add my-project case study"
+git push
 ```
 
-Both options run:
+Vercel detects the push and rebuilds in ~1 minute.
+
+## Adding a Category
+
+Edit `data/portfolio.json` → `categories` array:
+
+```json
+{ "id": "motion", "name": "Motion Design", "order": 5 }
 ```
-git add data/portfolio.json public/uploads/
-git commit -m "chore: update portfolio content"
-git push origin main
+
+The `id` is used for filtering in `WorkCanvas`. The `name` is displayed in the sidebar.
+
+## Current Categories
+
+| ID | Name |
+|---|---|
+| `uiux` | UI/UX |
+| `xr` | XR Design |
+| `graphic` | Graphic Design |
+| `advertising-design` | Advertising design |
+
+## Project Structure
+
 ```
-
-> The publish API is disabled on production (`NODE_ENV === "production"`).
-> On Vercel itself, use the terminal on your local machine.
-
-## Environment Variables
-
-| Variable | Required | Description |
-|---|---|---|
-| `ADMIN_PASSWORD` | Yes | Password for `/admin/login` |
-| `ADMIN_ENABLED` | Yes | Set to `"true"` to enable the admin panel locally |
-
-Copy `.env.local.example` → `.env.local` and fill in values. Never commit `.env.local`.
-
-## Data Files
-
-- `data/portfolio.json` — works and categories (committed to git for Vercel builds)
-- `public/uploads/` — uploaded images (committed to git, excluded by default in `.gitignore`)
-
-To include uploads in your Vercel build, run `npm run admin:publish` after adding images
-or commit them manually.
+app/
+  work/
+    page.tsx              — Work list (reads portfolio.json)
+    [slug]/page.tsx       — 404 fallback for slugs without a page file
+    my-project/page.tsx   — Individual case study (create one per work)
+data/
+  portfolio.json          — Work metadata + categories
+public/
+  images/                 — Static assets for case studies
+lib/
+  db.ts                   — Read-only helpers for portfolio.json
+```

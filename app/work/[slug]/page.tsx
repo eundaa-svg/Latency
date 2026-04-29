@@ -1,32 +1,15 @@
+// Fallback for /work/[slug] routes that don't have an individual page file.
+//
+// Code-first workflow:
+//   1. Add work to data/portfolio.json
+//   2. Create app/work/[your-slug]/page.tsx for the case study
+//      (Next.js static routes take precedence over this dynamic catch-all)
+//
+// If a slug exists in portfolio.json but has no dedicated page file,
+// this catch-all returns 404 — intentional.
+
 import { notFound } from "next/navigation";
-import { getWorks, getWorkById } from "@/lib/db";
-import { ProjectDetailClient } from "./ProjectDetailClient";
 
-interface PageProps {
-  params: { slug: string };
-}
-
-export async function generateStaticParams() {
-  const works = await getWorks();
-  return works.map((w) => ({ slug: w.id }));
-}
-
-export async function generateMetadata({ params }: PageProps) {
-  const work = await getWorkById(params.slug);
-  if (!work) return {};
-  return {
-    title: `${work.title} — LATENCY`,
-    description: work.description.slice(0, 155),
-  };
-}
-
-export default async function WorkDetailPage({ params }: PageProps) {
-  const works = await getWorks();
-  const work  = works.find((w) => w.id === params.slug);
-  if (!work) notFound();
-
-  const currentIndex = works.indexOf(work);
-  const nextWork     = works[(currentIndex + 1) % works.length] ?? work;
-
-  return <ProjectDetailClient work={work} nextWork={nextWork} />;
+export default function WorkDetailFallback() {
+  notFound();
 }
