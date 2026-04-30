@@ -174,7 +174,7 @@ export function IntroReveal({ onComplete }: { onComplete?: () => void }) {
       {/* Text body — padded to clear fixed nav (header ~72px) + breathing room */}
       <div
         className="px-6 sm:px-10 mx-auto w-full"
-        style={{ maxWidth: 720, paddingTop: "clamp(96px, 14vh, 160px)", paddingBottom: "clamp(80px, 10vh, 120px)" }}
+        style={{ maxWidth: 720, paddingTop: 80, paddingBottom: 100 }}
       >
         <div className="flex flex-col" style={{ gap: "1.4em" }}>
           {BLOCKS.map(block => {

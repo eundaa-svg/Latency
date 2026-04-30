@@ -5,7 +5,6 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { IntroReveal } from "./IntroReveal";
 import { WorkCanvas } from "./work/WorkCanvas";
-import { LiveClock } from "./LiveClock";
 import type { Work, PortfolioCategory } from "@/lib/db";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -91,34 +90,12 @@ export function IntroPage({ works, categories, initialView }: Props) {
           </nav>
         </header>
 
-        {/* Reveal body — scrollable with top clearance for fixed nav */}
-        <div className="flex-1 overflow-y-auto flex items-center">
+        {/* Reveal body — top-aligned, scrollable, no items-center to avoid top clip */}
+        <div className="flex-1 overflow-y-auto">
           <IntroReveal onComplete={() => setView("works")} />
         </div>
 
-        {/* Footer */}
-        <footer className="shrink-0 flex items-center justify-between px-6 sm:px-10 pb-6 sm:pb-8 relative z-10">
-          <LiveClock />
-          <div className="flex items-center gap-5 sm:gap-6 text-[10px] tracking-[0.06em] uppercase">
-            {[
-              { label: "twitter", href: "https://twitter.com/" },
-              { label: "email",   href: "mailto:dan@latency.work" },
-              { label: "are.na",  href: "https://are.na/" },
-            ].map(({ label, href }) => (
-              <a
-                key={label}
-                href={href}
-                data-interactive="true"
-                className="transition-all duration-150"
-                style={{ color: "var(--fg-muted)", opacity: 0.5 }}
-                onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.color = "var(--fg)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.5"; e.currentTarget.style.color = "var(--fg-muted)"; }}
-              >
-                {label}
-              </a>
-            ))}
-          </div>
-        </footer>
+        {/* Footer removed from intro phase — LiveClock + social links appear in works view only */}
       </motion.div>
     </AnimatePresence>
   );
