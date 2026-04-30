@@ -8,6 +8,7 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
+import { Logo } from "@/app/components/Logo";
 import { WorkCanvasProvider, useWorkCanvas } from "./WorkCanvasContext";
 import { CategoryStack } from "./CategoryStack";
 import { WorkGrid } from "./WorkGrid";
@@ -40,18 +41,7 @@ function WorkCanvasInner() {
 
       {/* Header */}
       <header className="shrink-0 flex items-center justify-between px-8 sm:px-10 pt-7 sm:pt-9 pb-5">
-        <Link
-          href="/"
-          data-interactive="true"
-          className="flex items-center gap-1.5 font-[family-name:var(--font-mono)] text-[11px] tracking-[0.18em] uppercase cursor-none focus:outline-none"
-          style={{ color: "var(--fg)" }}
-        >
-          LATENCY
-          <span
-            className="inline-block w-1.5 h-1.5 rounded-full"
-            style={{ background: "var(--accent)", animation: "glowPulse 2s ease-in-out infinite" }}
-          />
-        </Link>
+        <Logo size="md" href="/" />
         <nav className="flex items-center gap-5 font-[family-name:var(--font-mono)] text-[11px] tracking-[0.12em] uppercase">
           {[
             { label: "work",    href: "/work" },

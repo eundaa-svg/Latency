@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Logo } from "@/app/components/Logo";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -37,17 +38,7 @@ export function CaseStudy({
 
         {/* NAV */}
         <nav className="relative z-10 flex items-center justify-between px-6 sm:px-10 pt-7 sm:pt-9">
-          <Link
-            href="/"
-            data-interactive="true"
-            className="cs-logo flex items-center gap-1.5 text-[11px] sm:text-[12px] tracking-[0.04em] uppercase cursor-none"
-          >
-            LATENCY
-            <span
-              className="inline-block w-1.5 h-1.5 rounded-full"
-              style={{ background: "var(--accent)", animation: "glowPulse 2s ease-in-out infinite" }}
-            />
-          </Link>
+          <Logo size="md" href="/" />
           <div className="flex items-center gap-5 sm:gap-7 text-[11px] sm:text-[12px] tracking-[0.04em] uppercase">
             {(["work", "about", "contact"] as const).map((label) => (
               <Link

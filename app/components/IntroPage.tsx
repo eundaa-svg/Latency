@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { IntroReveal } from "./IntroReveal";
 import { WorkCanvas } from "./work/WorkCanvas";
+import { Logo } from "./Logo";
 import type { Work, PortfolioCategory } from "@/lib/db";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -46,18 +47,7 @@ export function IntroPage({ works, categories, initialView }: Props) {
       >
         {/* NAV — always visible so users can skip or navigate away */}
         <header className="shrink-0 flex items-center justify-between px-6 sm:px-10 pt-7 sm:pt-9 pb-4 relative z-10">
-          <Link
-            href="/"
-            data-interactive="true"
-            className="flex items-center gap-1.5 text-[11px] sm:text-[12px] tracking-[0.04em] uppercase cursor-none focus:outline-none"
-            style={{ color: "var(--fg)" }}
-          >
-            LATENCY
-            <span
-              className="inline-block w-1.5 h-1.5 rounded-full"
-              style={{ background: "var(--accent)", animation: "glowPulse 2s ease-in-out infinite" }}
-            />
-          </Link>
+          <Logo size="md" href="/" />
 
           <nav className="flex items-center gap-5 sm:gap-7 text-[11px] sm:text-[12px] tracking-[0.04em] uppercase">
             {/* WORK: skip reveal, go to works grid immediately */}
