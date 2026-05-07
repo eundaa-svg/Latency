@@ -15,7 +15,8 @@ export interface CaseStudyProps {
   title:         string;
   subtitle?:     string;
   image?:        { src: string; alt: string; width: number; height: number };
-  youtubeId?:    string;   // for video works — renders iframe instead of image
+  video?:        string;   // autoplay looping mp4 (priority: video > youtubeId > image)
+  youtubeId?:    string;   // YouTube embed
   description:   string;   // single prose paragraph
   meta:          MetaRow[];
 }
@@ -28,6 +29,7 @@ export function CaseStudy({
   title,
   subtitle,
   image,
+  video,
   youtubeId,
   description,
   meta,
@@ -87,8 +89,21 @@ export function CaseStudy({
             )}
           </header>
 
-          {/* Media — image or YouTube embed */}
-          {youtubeId ? (
+          {/* Media — priority: video > youtubeId > image */}
+          {video ? (
+            <div className="mb-8" style={{ maxWidth: 600 }}>
+              <video
+                src={video}
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                aria-label={title}
+                className="w-full h-auto"
+              />
+            </div>
+          ) : youtubeId ? (
             <div className="mb-8" style={{ maxWidth: 800 }}>
               <div className="relative w-full" style={{ aspectRatio: "16 / 9" }}>
                 <iframe
