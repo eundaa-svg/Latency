@@ -31,8 +31,9 @@ export interface Work {
   description?: string;
   role?: string;
   client?: string;
-  type?: string;        // "video" for embedded video works
+  type?: string;        // "video" for embedded video works (YouTube)
   youtubeId?: string;
+  video?: string;       // mp4 path for card hover-preview
   videoUrl?: string;
   posterUrl?: string;
 }
@@ -50,6 +51,7 @@ interface RawWork {
   client?: string;
   type?: string;
   youtubeId?: string;
+  video?: string;
   videoUrl?: string;
   posterUrl?: string;
   [key: string]: unknown;
@@ -84,6 +86,7 @@ export function getWorks(): Work[] {
       client:       w.client,
       type:         w.type,
       youtubeId:    w.youtubeId,
+      video:        w.video,
       videoUrl:     w.videoUrl,
       posterUrl:    w.posterUrl,
     }));

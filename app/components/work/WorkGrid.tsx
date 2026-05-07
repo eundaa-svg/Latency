@@ -1,12 +1,13 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { Work } from "@/lib/db";
 
-// No Framer Motion on cards — CSS-only hover and entry animation.
-// Framer Motion subscriptions on each card were adding JS overhead per-hover.
+// ── Module-level singleton: only one card plays at a time ─────────────────────
+// Object wrapper keeps the reference mutable across closures.
+const playing = { vid: null as HTMLVideoElement | null };
 
 interface Props {
   works: Work[];
@@ -42,7 +43,6 @@ export function WorkGrid({ works }: Props) {
         ))}
       </div>
 
-      {/* CSS entry animation — no JS, no Framer Motion subscription */}
       <style>{`
         @keyframes cardEnter {
           from { opacity: 0; transform: translateY(10px); }
@@ -52,26 +52,23 @@ export function WorkGrid({ works }: Props) {
           opacity: 0;
           animation: cardEnter 320ms ease forwards;
         }
-        /* CSS-only hover: scale image, dim overlay */
         .wg-thumb-img {
           transition: transform 280ms ease;
           will-change: transform;
         }
-        .wg-card:hover .wg-thumb-img {
-          transform: scale(1.025);
-        }
+        .wg-card:hover .wg-thumb-img { transform: scale(1.025); }
         .wg-thumb-overlay {
           opacity: 0;
           transition: opacity 220ms ease;
         }
-        .wg-card:hover .wg-thumb-overlay {
-          opacity: 1;
-        }
-        .wg-title {
-          transition: opacity 180ms ease;
-        }
-        .wg-card:hover .wg-title {
-          opacity: 0.65;
+        .wg-card:hover .wg-thumb-overlay { opacity: 1; }
+        .wg-title { transition: opacity 180ms ease; }
+        .wg-card:hover .wg-title { opacity: 0.65; }
+        /* Video fade-in is handled via JS (v.style.opacity) to sync with play() */
+        .wg-video {
+          position: absolute; inset: 0; width: 100%; height: 100%;
+          object-fit: cover; opacity: 0;
+          transition: opacity 300ms ease;
         }
       `}</style>
     </>
@@ -85,23 +82,104 @@ interface CardProps {
   onSelect: (id: string) => void;
 }
 
-// memo: prevents sibling-card re-renders from propagating here
 const WorkCard = memo(function WorkCard({ work, index, eager, onSelect }: CardProps) {
+  const cardRef  = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [inView,   setInView]   = useState(false);
+  const [canHover, setCanHover] = useState(false);
+  const hoverTimer = useRef<number | null>(null);
+
+  // Detect hover-capable device (desktop pointer, not touch)
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    setCanHover(mq.matches);
+    const update = (e: MediaQueryListEvent) => setCanHover(e.matches);
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  // IntersectionObserver: mount video element only when card enters viewport
+  // rootMargin 200px pre-activates 200px before the card is visible
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin: "200px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimer.current) clearTimeout(hoverTimer.current);
+      const v = videoRef.current;
+      if (v) {
+        v.pause();
+        if (playing.vid === v) playing.vid = null;
+      }
+    };
+  }, []);
+
+  const handleEnter = () => {
+    if (!canHover || !work.video) return;
+    // 300ms intentional latency — Latency brand concept
+    hoverTimer.current = window.setTimeout(() => {
+      const v = videoRef.current;
+      if (!v) return;
+      // Stop any other currently-playing card
+      if (playing.vid && playing.vid !== v) {
+        playing.vid.pause();
+        playing.vid.currentTime = 0;
+        playing.vid.style.opacity = "0";
+      }
+      v.play()
+        .then(() => {
+          playing.vid = v;
+          v.style.opacity = "1";       // fade in
+        })
+        .catch(() => {/* autoplay blocked — fail silently */});
+    }, 300);
+  };
+
+  const handleLeave = () => {
+    if (hoverTimer.current) {
+      clearTimeout(hoverTimer.current);
+      hoverTimer.current = null;
+    }
+    const v = videoRef.current;
+    if (v) {
+      v.pause();
+      v.currentTime = 0;
+      v.style.opacity = "0";           // fade out
+      if (playing.vid === v) playing.vid = null;
+    }
+  };
+
+  const hasVideoPreview = !!work.video;
+  const hasVideoBadge   = work.type === "video" || hasVideoPreview;
+
   return (
     <div
+      ref={cardRef}
       className="wg-card"
       style={{ animationDelay: `${index * 55}ms` }}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
     >
       <button
         onClick={() => onSelect(work.id)}
         data-interactive="true"
         className="block w-full text-left cursor-none focus:outline-none"
       >
-        {/* Thumbnail */}
+        {/* Thumbnail area */}
         <div
           className="relative w-full overflow-hidden"
           style={{ aspectRatio: "4 / 5", background: work.accentColor || "#111" }}
         >
+          {/* PNG — always present, acts as poster */}
           {work.thumbnail && (
             <Image
               src={work.thumbnail}
@@ -113,8 +191,24 @@ const WorkCard = memo(function WorkCard({ work, index, eager, onSelect }: CardPr
               loading={eager ? undefined : "lazy"}
             />
           )}
-          {/* Video badge — shown for works with type: "video" */}
-          {work.type === "video" && (
+
+          {/* Video — lazy-mounted: only when in viewport + hover-capable device + has video */}
+          {inView && canHover && work.video && (
+            <video
+              ref={videoRef}
+              src={work.video}
+              muted
+              loop
+              playsInline
+              preload="none"
+              poster={work.thumbnail}
+              aria-hidden
+              className="wg-video"
+            />
+          )}
+
+          {/* ▶ badge for any video work (hover-preview or YouTube) */}
+          {hasVideoBadge && (
             <div
               className="absolute top-2.5 right-2.5 pointer-events-none"
               style={{
@@ -130,7 +224,8 @@ const WorkCard = memo(function WorkCard({ work, index, eager, onSelect }: CardPr
               ▶
             </div>
           )}
-          {/* Hover overlay — CSS-only, no JS */}
+
+          {/* Hover overlay */}
           <div
             className="wg-thumb-overlay absolute inset-0 pointer-events-none"
             style={{ background: "rgba(0,0,0,0.14)" }}
