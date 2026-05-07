@@ -55,8 +55,8 @@ export function CaseStudy({
           </div>
         </nav>
 
-        {/* CONTENT */}
-        <div className="px-6 sm:px-10" style={{ maxWidth: 840 }}>
+        {/* CONTENT — centered column, text left-aligned within */}
+        <div className="px-6 sm:px-10 mx-auto" style={{ maxWidth: 840 }}>
 
           {/* Back */}
           <div className="pt-8">
@@ -91,7 +91,7 @@ export function CaseStudy({
 
           {/* Media — priority: video > youtubeId > image */}
           {video ? (
-            <div className="mb-8" style={{ maxWidth: 600 }}>
+            <div className="mb-8 mx-auto" style={{ maxWidth: 600 }}>
               <video
                 src={video}
                 autoPlay
@@ -100,11 +100,11 @@ export function CaseStudy({
                 playsInline
                 preload="metadata"
                 aria-label={title}
-                className="w-full h-auto"
+                className="w-full h-auto block"
               />
             </div>
           ) : youtubeId ? (
-            <div className="mb-8" style={{ maxWidth: 800 }}>
+            <div className="mb-8 mx-auto" style={{ maxWidth: 800 }}>
               <div className="relative w-full" style={{ aspectRatio: "16 / 9" }}>
                 <iframe
                   src={`https://www.youtube.com/embed/${youtubeId}`}
@@ -129,13 +129,13 @@ export function CaseStudy({
               </p>
             </div>
           ) : image ? (
-            <div className="mb-8" style={{ maxWidth: 600 }}>
+            <div className="mb-8 mx-auto" style={{ maxWidth: 600 }}>
               <Image
                 src={image.src}
                 alt={image.alt}
                 width={image.width}
                 height={image.height}
-                className="w-full h-auto"
+                className="w-full h-auto block"
                 sizes="(max-width: 640px) 100vw, 600px"
                 priority
               />
