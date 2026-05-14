@@ -3,9 +3,9 @@ import Link from "next/link";
 
 // Logo: 1920×1080 px (ratio 16:9)
 const SIZES = {
-  sm: { w: 43,  h: 24 },
-  md: { w: 53,  h: 30 },
-  lg: { w: 71,  h: 40 },
+  sm: { w:  57, h: 32 },
+  md: { w: 107, h: 60 },
+  lg: { w: 142, h: 80 },
 } as const;
 
 interface LogoProps {
