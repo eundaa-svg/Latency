@@ -48,7 +48,21 @@ export default function NopiPage() {
         </dl>
       </header>
 
-      {/* 이미지 흐름 — 간격 0으로 세로 연속, 풀 너비 */}
+      {/* 메인 대표 이미지 (nopi.png) */}
+      <div className="mx-auto max-w-[880px] px-6 pb-16">
+        <Image
+          src="/images/works/nopi.png"
+          alt="NOPI — 목표 기반 재무관리 AI 서비스"
+          width={1600}
+          height={1200}
+          sizes="(max-width: 880px) 100vw, 880px"
+          className="block w-full h-auto"
+          priority
+          quality={90}
+        />
+      </div>
+
+      {/* 케이스 스터디 이미지 흐름 — 14장 간격 0 연속, 풀 너비 */}
       <section className="w-full bg-black" style={{ lineHeight: 0 }}>
         {Array.from({ length: 14 }, (_, i) => i + 1).map((n) => {
           const num = n.toString().padStart(2, "0");
@@ -62,7 +76,6 @@ export default function NopiPage() {
               sizes="100vw"
               className="block w-full h-auto"
               style={{ margin: 0, padding: 0, display: "block" }}
-              priority={n === 1}
               quality={90}
             />
           );
