@@ -8,6 +8,16 @@
   ],
   "works": [
     {
+      "id": "nopi",
+      "title": "NOPI",
+      "categoryId": "uiux",
+      "thumbnail": "/images/works/nopi.png",
+      "year": "2025",
+      "order": 1,
+      "spanCols": 2,
+      "accentColor": "#0A0F1E"
+    },
+    {
       "id": "arbor-day-80th",
       "title": "식목일 80주년 포스터",
       "categoryId": "graphic",
