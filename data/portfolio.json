@@ -8,6 +8,16 @@
   ],
   "works": [
     {
+      "id": "vvit",
+      "title": "V.VIT",
+      "categoryId": "xr",
+      "thumbnail": "/images/works/xr.png",
+      "year": "2025",
+      "order": 1,
+      "spanCols": 2,
+      "accentColor": "#0A0A1A"
+    },
+    {
       "id": "nopi",
       "title": "NOPI",
       "categoryId": "uiux",
