@@ -47,6 +47,15 @@
       "accentColor": "#0A3D8F"
     },
     {
+      "id": "tokyo-sonata",
+      "title": "TOKYO SONATA",
+      "categoryId": "graphic",
+      "thumbnail": "/images/works/tokyo-sonata.png",
+      "year": "2025",
+      "order": 5,
+      "accentColor": "#1C1C2E"
+    },
+    {
       "id": "the-red-line",
       "title": "The Red Line",
       "categoryId": "advertising-design",
