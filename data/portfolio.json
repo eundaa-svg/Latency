@@ -92,6 +92,16 @@
       "accentColor": "#1A1206"
     },
     {
+      "id": "enc-typography",
+      "title": "EnC",
+      "categoryId": "graphic",
+      "thumbnail": "/images/works/chocolate.png",
+      "year": "2025",
+      "order": 8,
+      "spanCols": 1,
+      "accentColor": "#1A0A06"
+    },
+    {
       "id": "gardni",
       "title": "가드니",
       "categoryId": "character",
