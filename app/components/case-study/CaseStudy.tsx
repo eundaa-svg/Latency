@@ -19,6 +19,8 @@ export interface CaseStudyProps {
   youtubeId?:    string;   // YouTube embed
   description:   string;   // single prose paragraph
   meta:          MetaRow[];
+  /** Optional supplementary images shown after meta, before footer */
+  additionalImages?: Array<{ src: string; alt: string }>;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -33,6 +35,7 @@ export function CaseStudy({
   youtubeId,
   description,
   meta,
+  additionalImages,
 }: CaseStudyProps) {
   return (
     <>
@@ -171,6 +174,24 @@ export function CaseStudy({
               </div>
             ))}
           </div>
+
+          {/* Supplementary images */}
+          {additionalImages && additionalImages.length > 0 && (
+            <div className="mb-16 space-y-8">
+              {additionalImages.map((img, i) => (
+                <Image
+                  key={i}
+                  src={img.src}
+                  alt={img.alt}
+                  width={1600}
+                  height={1200}
+                  sizes="(max-width: 880px) 100vw, 840px"
+                  className="block w-full h-auto"
+                  quality={90}
+                />
+              ))}
+            </div>
+          )}
 
           {/* Footer */}
           <div className="pb-16" style={{ borderTop: "1px solid var(--border)", paddingTop: "2.5rem" }}>

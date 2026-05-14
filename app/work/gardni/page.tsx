@@ -19,6 +19,9 @@ export default function GardniPage() {
         { label: "AWARD",  value: "특선" },
         { label: "YEAR",   value: "2025" },
       ]}
+      additionalImages={[
+        { src: "/images/works/character_01.png", alt: "가드니 — 캐릭터 시스템 (턴어라운드 · 포즈 · 컬러 가이드)" },
+      ]}
     />
   );
 }
