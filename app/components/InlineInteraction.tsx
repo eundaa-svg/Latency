@@ -384,9 +384,9 @@ export function AdvertisingWord() {
           ? {
               textShadow: [
                 "0 0 0px transparent",
-                "0 0 18px rgba(255,255,255,0.85), 0 0 36px rgba(0,81,255,0.5)",
+                "0 0 18px rgba(255,255,255,0.85), 0 0 36px rgba(184,212,241,0.5)",
                 "0 0 0px transparent",
-                "0 0 18px rgba(255,255,255,0.85), 0 0 36px rgba(0,81,255,0.5)",
+                "0 0 18px rgba(255,255,255,0.85), 0 0 36px rgba(184,212,241,0.5)",
                 "0 0 0px transparent",
               ],
             }

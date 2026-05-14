@@ -18,8 +18,11 @@
  *   --fg            #F2F2F2   primary text — slight warmth, not pure white
  *   --fg-muted      #6B6B6B   secondary text, nav, metadata (AA vs --bg ✓)
  *   --fg-subtle     #2A2A2A   disabled / decorative strokes
- *   --accent        #0051FF   electric blue — single brand accent
- *   --accent-glow   rgba(0,81,255,0.15)   soft glow at low opacity
+ *   --accent        #B8D4F1   pastel tint — brand accent
+ *   --accent-glow   rgba(184,212,241,0.15)   soft glow at low opacity
+ *   --accent-mid    #8FB2D9   mid pastel (gradient / hover)
+ *   --accent-deep   #5B7FA3   dark end (gradient)
+ *   --accent-soft   rgba(184,212,241,0.15)   divider / line tint
  *   --border        #1A1A1A   all border / divider lines
  * ═══════════════════════════════════════════════════════════════════════════
  */
@@ -34,8 +37,11 @@
   --fg:           #F2F2F2;
   --fg-muted:     #6B6B6B;
   --fg-subtle:    #2A2A2A;
-  --accent:       #0051FF;
-  --accent-glow:  rgba(0, 81, 255, 0.15);
+  --accent:       #B8D4F1;
+  --accent-glow:  rgba(184, 212, 241, 0.15);
+  --accent-mid:   #8FB2D9;
+  --accent-deep:  #5B7FA3;
+  --accent-soft:  rgba(184, 212, 241, 0.15);
   --border:       #1A1A1A;
 
   /* Both variables now point to Pretendard — all var(--font-mono) and
@@ -72,8 +78,8 @@ body {
 
 /* ── Selection ───────────────────────────────────────────────────────────── */
 ::selection {
-  background: var(--accent);
-  color: var(--bg);
+  background: var(--accent-deep);
+  color: var(--fg);
 }
 
 /* ── Focus ring ───────────────────────────────────────────────────────────── */

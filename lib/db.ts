@@ -80,7 +80,7 @@ export function getWorks(): Work[] {
       thumbnail:   w.thumbnail,
       year:        w.year,
       order:       w.order,
-      accentColor:  w.accentColor ?? "#0051FF",
+      accentColor:  w.accentColor ?? "#B8D4F1",
       description:  w.description,
       role:         w.role,
       client:       w.client,

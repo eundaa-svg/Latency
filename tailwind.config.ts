@@ -42,8 +42,8 @@ const config: Config = {
       },
       keyframes: {
         glowPulse: {
-          "0%, 100%": { opacity: "0.6", boxShadow: "0 0 4px rgba(0,81,255,0.35)" },
-          "50%":       { opacity: "1",   boxShadow: "0 0 10px rgba(0,81,255,0.6)" },
+          "0%, 100%": { opacity: "0.6", boxShadow: "0 0 4px rgba(184,212,241,0.35)" },
+          "50%":       { opacity: "1",   boxShadow: "0 0 10px rgba(184,212,241,0.6)" },
         },
         gentlePulse: {
           "0%, 100%": { opacity: "0.28" },
