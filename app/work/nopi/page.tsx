@@ -50,20 +50,23 @@ export default function NopiPage() {
 
       {/* 이미지 흐름 — 간격 0으로 세로 연속, 풀 너비 */}
       <section className="w-full bg-black" style={{ lineHeight: 0 }}>
-        {[1, 2, 3, 4, 5].map((n) => (
-          <Image
-            key={n}
-            src={`/images/works/nopi_0${n}.png`}
-            alt={`NOPI 케이스 스터디 ${n}/5`}
-            width={1920}
-            height={1080}
-            sizes="100vw"
-            className="block w-full h-auto"
-            style={{ margin: 0, padding: 0, display: "block" }}
-            priority={n === 1}
-            quality={90}
-          />
-        ))}
+        {Array.from({ length: 14 }, (_, i) => i + 1).map((n) => {
+          const num = n.toString().padStart(2, "0");
+          return (
+            <Image
+              key={n}
+              src={`/images/works/nopi_${num}.png`}
+              alt={`NOPI 케이스 스터디 ${n}/14`}
+              width={1920}
+              height={1080}
+              sizes="100vw"
+              className="block w-full h-auto"
+              style={{ margin: 0, padding: 0, display: "block" }}
+              priority={n === 1}
+              quality={90}
+            />
+          );
+        })}
       </section>
 
       {/* 하단 푸터 */}
