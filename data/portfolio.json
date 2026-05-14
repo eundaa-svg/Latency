@@ -3,7 +3,8 @@
     { "id": "uiux",              "name": "UI/UX",             "order": 1 },
     { "id": "xr",                "name": "XR Design",         "order": 2 },
     { "id": "graphic",           "name": "Graphic Design",    "order": 3 },
-    { "id": "advertising-design","name": "Advertising design","order": 4 }
+    { "id": "character",         "name": "Character Design",  "order": 4 },
+    { "id": "advertising-design","name": "Advertising design","order": 5 }
   ],
   "works": [
     {
@@ -69,6 +70,16 @@
       "order": 6,
       "spanCols": 2,
       "accentColor": "#0D0D1A"
+    },
+    {
+      "id": "gardni",
+      "title": "가드니",
+      "categoryId": "character",
+      "thumbnail": "/images/works/character.png",
+      "year": "2025",
+      "order": 1,
+      "spanCols": 2,
+      "accentColor": "#3D1F2D"
     },
     {
       "id": "the-red-line",
