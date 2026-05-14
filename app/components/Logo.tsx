@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 
-// Original logo: 1205×352 px (ratio ≈ 3.42:1)
+// Logo: 1920×1080 px (ratio 16:9)
 const SIZES = {
-  sm: { w: 55,  h: 16 },
-  md: { w: 68,  h: 20 },
-  lg: { w: 96,  h: 28 },
+  sm: { w: 43,  h: 24 },
+  md: { w: 53,  h: 30 },
+  lg: { w: 71,  h: 40 },
 } as const;
 
 interface LogoProps {
