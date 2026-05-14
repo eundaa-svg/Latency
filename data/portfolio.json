@@ -72,6 +72,16 @@
       "accentColor": "#0D0D1A"
     },
     {
+      "id": "horse-calendar-2026",
+      "title": "2026 말 달력 디자인",
+      "categoryId": "graphic",
+      "thumbnail": "/images/works/horse.png",
+      "year": "2026",
+      "order": 7,
+      "spanCols": 1,
+      "accentColor": "#1A1206"
+    },
+    {
       "id": "gardni",
       "title": "가드니",
       "categoryId": "character",
