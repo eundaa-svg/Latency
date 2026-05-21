@@ -14,7 +14,7 @@
       "thumbnail": "/images/works/xr.png",
       "year": "2025",
       "order": 1,
-      "spanCols": 2,
+      "spanCols": 1,
       "accentColor": "#0A0A1A"
     },
     {
@@ -24,7 +24,7 @@
       "thumbnail": "/images/works/nopi.png",
       "year": "2025",
       "order": 1,
-      "spanCols": 2,
+      "spanCols": 1,
       "accentColor": "#0A0F1E"
     },
     {
@@ -88,7 +88,7 @@
       "thumbnail": "/images/works/orbital-synthesis-lab.png",
       "year": "2025",
       "order": 6,
-      "spanCols": 2,
+      "spanCols": 1,
       "accentColor": "#0D0D1A"
     },
     {
@@ -118,7 +118,7 @@
       "thumbnail": "/images/works/character.png",
       "year": "2025",
       "order": 1,
-      "spanCols": 2,
+      "spanCols": 1,
       "accentColor": "#3D1F2D"
     },
     {
@@ -128,7 +128,7 @@
       "thumbnail": "/images/works/the-red-line.jpg",
       "year": "2025",
       "order": 1,
-      "spanCols": 2,
+      "spanCols": 1,
       "accentColor": "#CC0000",
       "type": "video",
       "youtubeId": "SE9fLMtllAg"

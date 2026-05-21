@@ -1,8 +1,5 @@
 "use client";
 
-// spanCols rule: "spanCols": 1 for portrait works (default), "spanCols": 2 for landscape works.
-// Set in data/portfolio.json per work entry.
-
 import { memo, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -30,7 +27,6 @@ export function WorkGrid({ works }: Props) {
 
   return (
     <>
-      {/* 3-col desktop / 2-col tablet / 1-col mobile, dense fill for span-2 gaps */}
       <div className="wg-grid">
         {works.map((work, i) => (
           <WorkCard
@@ -47,7 +43,6 @@ export function WorkGrid({ works }: Props) {
         .wg-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          grid-auto-flow: dense;
           gap: 24px;
         }
         @media (max-width: 1024px) {
@@ -55,11 +50,6 @@ export function WorkGrid({ works }: Props) {
         }
         @media (max-width: 640px) {
           .wg-grid { grid-template-columns: 1fr; }
-        }
-
-        .wg-span-2 { grid-column: span 2; }
-        @media (max-width: 640px) {
-          .wg-span-2 { grid-column: span 1; }
         }
 
         @keyframes cardEnter {
@@ -70,25 +60,21 @@ export function WorkGrid({ works }: Props) {
           opacity: 0;
           animation: cardEnter 320ms ease forwards;
         }
-        /* Video scale on hover — GPU composited, no layout cost */
         .wg-card video {
           transition: transform 280ms ease;
           will-change: transform;
         }
         .wg-card:hover video { transform: scale(1.025); }
-        /* Fallback image scale */
         .wg-thumb-img {
           transition: transform 280ms ease;
           will-change: transform;
         }
         .wg-card:hover .wg-thumb-img { transform: scale(1.025); }
-        /* Hover overlay */
         .wg-thumb-overlay {
           opacity: 0;
           transition: opacity 220ms ease;
         }
         .wg-card:hover .wg-thumb-overlay { opacity: 1; }
-        /* Title dim */
         .wg-title { transition: opacity 180ms ease; }
         .wg-card:hover .wg-title { opacity: 0.65; }
       `}</style>
@@ -105,9 +91,7 @@ interface CardProps {
 
 const WorkCard = memo(function WorkCard({ work, index, eager, onSelect }: CardProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const span2    = work.spanCols === 2;
 
-  // iOS Safari fix: first frame doesn't render without nudging currentTime
   useEffect(() => {
     const v = videoRef.current;
     if (v) v.currentTime = 0.01;
@@ -117,7 +101,7 @@ const WorkCard = memo(function WorkCard({ work, index, eager, onSelect }: CardPr
     const v = videoRef.current;
     if (!v) return;
     v.currentTime = 0;
-    v.play().catch(() => {/* autoplay blocked — fail silently */});
+    v.play().catch(() => {});
   };
 
   const stop = () => {
@@ -132,7 +116,7 @@ const WorkCard = memo(function WorkCard({ work, index, eager, onSelect }: CardPr
 
   return (
     <div
-      className={`wg-card${span2 ? " wg-span-2" : ""}`}
+      className="wg-card"
       style={{ animationDelay: `${index * 55}ms` }}
       onMouseEnter={hasVideo ? play  : undefined}
       onMouseLeave={hasVideo ? stop  : undefined}
@@ -144,16 +128,15 @@ const WorkCard = memo(function WorkCard({ work, index, eager, onSelect }: CardPr
         data-interactive="true"
         className="block w-full text-left cursor-none focus:outline-none"
       >
-        {/* Media container */}
-        {hasVideo ? (
-          /* Video works: fixed aspect ratio container */
-          <div
-            className="relative w-full overflow-hidden"
-            style={{
-              aspectRatio: span2 ? "16/9" : "4/5",
-              background: work.accentColor || "#111",
-            }}
-          >
+        {/* 1:1 미디어 컨테이너 */}
+        <div
+          className="relative w-full overflow-hidden"
+          style={{
+            aspectRatio: "1/1",
+            background: work.accentColor || "#111",
+          }}
+        >
+          {hasVideo ? (
             <video
               ref={videoRef}
               src={work.video}
@@ -164,42 +147,26 @@ const WorkCard = memo(function WorkCard({ work, index, eager, onSelect }: CardPr
               aria-label={work.title}
               className="absolute inset-0 w-full h-full object-cover block"
             />
-            {showBadge && <VideoBadge />}
-            <div
-              className="wg-thumb-overlay absolute inset-0 pointer-events-none"
-              style={{ background: "rgba(0,0,0,0.14)" }}
-            />
-          </div>
-        ) : work.thumbnail ? (
-          /* Image-only works: natural ratio, no crop */
-          <div
-            className="relative w-full overflow-hidden"
-            style={{ background: work.accentColor || "#111" }}
-          >
+          ) : work.thumbnail ? (
             <Image
               src={work.thumbnail}
               alt={work.title}
-              width={span2 ? 1280 : 800}
-              height={span2 ? 720  : 1067}
-              className="w-full h-auto block wg-thumb-img"
-              sizes={
-                span2
-                  ? "(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 66vw"
-                  : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              }
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover wg-thumb-img"
               priority={eager}
               loading={eager ? undefined : "lazy"}
             />
-            {showBadge && <VideoBadge />}
-            <div
-              className="wg-thumb-overlay absolute inset-0 pointer-events-none"
-              style={{ background: "rgba(0,0,0,0.14)" }}
-            />
-          </div>
-        ) : null}
+          ) : null}
+          {showBadge && <VideoBadge />}
+          <div
+            className="wg-thumb-overlay absolute inset-0 pointer-events-none"
+            style={{ background: "rgba(0,0,0,0.14)" }}
+          />
+        </div>
 
         {/* Meta */}
-        <div className="mt-3">
+        <div className="mt-3 min-h-[3em]">
           <p
             className="wg-title font-[family-name:var(--font-mono)] text-[13px] tracking-[-0.01em]"
             style={{ color: "var(--fg)" }}
