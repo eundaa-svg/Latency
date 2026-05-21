@@ -8,6 +8,7 @@ export const metadata = {
 export default function TokyoSonataPage() {
   return (
     <CaseStudy
+      slug="tokyo-sonata"
       categoryLabel="Graphic Design"
       year="2025"
       title="TOKYO SONATA"

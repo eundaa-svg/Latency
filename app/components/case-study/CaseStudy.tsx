@@ -1,31 +1,35 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { motion, useReducedMotion } from "framer-motion";
 import { Logo } from "@/app/components/Logo";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface MetaRow {
-  label: string;  // e.g. "ROLE", "CLIENT", "YEAR", "AWARD"
+  label: string;
   value: string;
 }
 
 export interface CaseStudyProps {
-  categoryLabel: string;   // e.g. "GRAPHIC DESIGN"
+  slug:          string;        // work id — used for shared-element layoutId
+  categoryLabel: string;
   year:          string;
   title:         string;
   subtitle?:     string;
   image?:        { src: string; alt: string; width: number; height: number };
-  video?:        string;   // autoplay looping mp4 (priority: video > youtubeId > image)
-  youtubeId?:    string;   // YouTube embed
-  description:   string;   // single prose paragraph
+  video?:        string;
+  youtubeId?:    string;
+  description:   string;
   meta:          MetaRow[];
-  /** Optional supplementary images shown after meta, before footer */
   additionalImages?: Array<{ src: string; alt: string }>;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function CaseStudy({
+  slug,
   categoryLabel,
   year,
   title,
@@ -37,6 +41,10 @@ export function CaseStudy({
   meta,
   additionalImages,
 }: CaseStudyProps) {
+  const shouldReduceMotion = useReducedMotion();
+  const transitionDuration = shouldReduceMotion ? 0 : 0.5;
+  const sharedTransition = { duration: transitionDuration, ease: [0.4, 0, 0.2, 1] as const };
+
   return (
     <>
       <div className="min-h-screen" style={{ background: "var(--bg)", color: "var(--fg)" }}>
@@ -58,18 +66,28 @@ export function CaseStudy({
           </div>
         </nav>
 
-        {/* CONTENT — centered column, text left-aligned within */}
+        {/* CONTENT */}
         <div className="px-6 sm:px-10 mx-auto" style={{ maxWidth: 840 }}>
 
           {/* Back */}
-          <div className="pt-8">
+          <motion.div
+            className="pt-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: transitionDuration, delay: shouldReduceMotion ? 0 : 0.15, ease: [0.4, 0, 0.2, 1] }}
+          >
             <Link href="/work" data-interactive="true" className="cs-back inline-flex items-center gap-2 text-[12px] cursor-none">
               ← Back to Work
             </Link>
-          </div>
+          </motion.div>
 
-          {/* Header */}
-          <header className="pt-10 pb-12">
+          {/* Header — fades in after image settles */}
+          <motion.header
+            className="pt-10 pb-12"
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: transitionDuration, delay: shouldReduceMotion ? 0 : 0.25, ease: [0.4, 0, 0.2, 1] }}
+          >
             <p
               className="text-[11px] tracking-[0.06em] uppercase mb-4"
               style={{ color: "var(--accent)" }}
@@ -90,9 +108,9 @@ export function CaseStudy({
                 {subtitle}
               </p>
             )}
-          </header>
+          </motion.header>
 
-          {/* Media — priority: video > youtubeId > image */}
+          {/* Media — shared element (image) or plain (video/youtube) */}
           {video ? (
             <div className="mb-8 mx-auto" style={{ maxWidth: 600 }}>
               <video
@@ -132,7 +150,13 @@ export function CaseStudy({
               </p>
             </div>
           ) : image ? (
-            <div className="mb-8 mx-auto" style={{ maxWidth: 600 }}>
+            /* Shared element — matches layoutId in WorkGrid card */
+            <motion.div
+              layoutId={`work-thumb-${slug}`}
+              className="mb-8 mx-auto overflow-hidden"
+              style={{ maxWidth: 600 }}
+              transition={sharedTransition}
+            >
               <Image
                 src={image.src}
                 alt={image.alt}
@@ -142,42 +166,47 @@ export function CaseStudy({
                 sizes="(max-width: 640px) 100vw, 600px"
                 priority
               />
-            </div>
+            </motion.div>
           ) : null}
 
-          {/* Description */}
-          <p
-            className="text-[15px] leading-[1.75] mb-12"
-            style={{ maxWidth: 680, color: "var(--fg-muted)" }}
+          {/* Description + Meta — fade in after header */}
+          <motion.div
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: transitionDuration, delay: shouldReduceMotion ? 0 : 0.35, ease: [0.4, 0, 0.2, 1] }}
           >
-            {description}
-          </p>
+            <p
+              className="text-[15px] leading-[1.75] mb-12"
+              style={{ maxWidth: 680, color: "var(--fg-muted)" }}
+            >
+              {description}
+            </p>
 
-          {/* Meta rows */}
-          <div
-            className="flex flex-col gap-0 mb-24"
-            style={{ maxWidth: 680, borderTop: "1px solid var(--border)" }}
-          >
-            {meta.map(({ label, value }) => (
-              <div
-                key={label}
-                className="flex gap-6 py-3 text-[13px]"
-                style={{ borderBottom: "1px solid var(--border)" }}
-              >
-                <span
-                  className="w-16 shrink-0 text-[10px] tracking-[0.08em] uppercase"
-                  style={{ color: "var(--fg-muted)", opacity: 0.45, paddingTop: 2 }}
+            <div
+              className="flex flex-col gap-0 mb-24"
+              style={{ maxWidth: 680, borderTop: "1px solid var(--border)" }}
+            >
+              {meta.map(({ label, value }) => (
+                <div
+                  key={label}
+                  className="flex gap-6 py-3 text-[13px]"
+                  style={{ borderBottom: "1px solid var(--border)" }}
                 >
-                  {label}
-                </span>
-                <span style={{ color: "var(--fg)" }}>{value}</span>
-              </div>
-            ))}
-          </div>
+                  <span
+                    className="w-16 shrink-0 text-[10px] tracking-[0.08em] uppercase"
+                    style={{ color: "var(--fg-muted)", opacity: 0.45, paddingTop: 2 }}
+                  >
+                    {label}
+                  </span>
+                  <span style={{ color: "var(--fg)" }}>{value}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
 
-        </div>{/* end centered column */}
+        </div>
 
-        {/* Supplementary images — full-width, zero gap */}
+        {/* Supplementary images */}
         {additionalImages && additionalImages.length > 0 && (
           <section className="w-full" style={{ lineHeight: 0 }}>
             {additionalImages.map((img, i) => (
@@ -206,10 +235,6 @@ export function CaseStudy({
       </div>
 
       <style>{`
-        @keyframes glowPulse {
-          0%, 100% { opacity: 0.5; }
-          50%       { opacity: 1;   }
-        }
         .cs-logo       { color: var(--fg); }
         .cs-nav-link   { color: var(--fg-muted); transition: color 150ms; }
         .cs-nav-link:hover { color: var(--fg); }

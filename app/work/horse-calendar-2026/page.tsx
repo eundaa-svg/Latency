@@ -8,6 +8,7 @@ export const metadata = {
 export default function HorseCalendar2026Page() {
   return (
     <CaseStudy
+      slug="horse-calendar-2026"
       categoryLabel="Graphic Design"
       year="2026"
       title="2026 말 달력 디자인"

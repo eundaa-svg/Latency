@@ -8,6 +8,7 @@ export const metadata = {
 export default function WorldOceanForumPage() {
   return (
     <CaseStudy
+      slug="world-ocean-forum"
       categoryLabel="Graphic Design"
       year="2025"
       title="세계해양포럼 포스터"

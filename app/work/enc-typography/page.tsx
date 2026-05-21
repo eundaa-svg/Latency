@@ -8,6 +8,7 @@ export const metadata = {
 export default function EncTypographyPage() {
   return (
     <CaseStudy
+      slug="enc-typography"
       categoryLabel="Graphic Design"
       year="2025"
       title="EnC"

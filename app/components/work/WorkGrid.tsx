@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useRef, useEffect } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { Work } from "@/lib/db";
@@ -61,10 +62,11 @@ export function WorkGrid({ works }: Props) {
           animation: cardEnter 320ms ease forwards;
         }
         .wg-card video {
-          transition: transform 280ms ease;
-          will-change: transform;
+          opacity: 0;
+          transition: opacity 300ms ease, transform 280ms ease;
+          will-change: transform, opacity;
         }
-        .wg-card:hover video { transform: scale(1.025); }
+        .wg-card:hover video { opacity: 1; transform: scale(1.025); }
         .wg-thumb-img {
           transition: transform 280ms ease;
           will-change: transform;
@@ -91,6 +93,7 @@ interface CardProps {
 
 const WorkCard = memo(function WorkCard({ work, index, eager, onSelect }: CardProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     const v = videoRef.current;
@@ -128,26 +131,20 @@ const WorkCard = memo(function WorkCard({ work, index, eager, onSelect }: CardPr
         data-interactive="true"
         className="block w-full text-left cursor-none focus:outline-none"
       >
-        {/* 1:1 미디어 컨테이너 */}
-        <div
+        {/* Shared element: layoutId ties this to the detail page hero */}
+        <motion.div
+          layoutId={`work-thumb-${work.id}`}
           className="relative w-full overflow-hidden"
           style={{
             aspectRatio: "1/1",
             background: work.accentColor || "#111",
           }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 0.5,
+            ease: [0.4, 0, 0.2, 1],
+          }}
         >
-          {hasVideo ? (
-            <video
-              ref={videoRef}
-              src={work.video}
-              muted
-              playsInline
-              loop
-              preload="auto"
-              aria-label={work.title}
-              className="absolute inset-0 w-full h-full object-cover block"
-            />
-          ) : work.thumbnail ? (
+          {work.thumbnail && (
             <Image
               src={work.thumbnail}
               alt={work.title}
@@ -157,13 +154,27 @@ const WorkCard = memo(function WorkCard({ work, index, eager, onSelect }: CardPr
               priority={eager}
               loading={eager ? undefined : "lazy"}
             />
-          ) : null}
+          )}
+          {/* Hover video — inside shared element container, not part of layoutId animation */}
+          {hasVideo && (
+            <video
+              ref={videoRef}
+              src={work.video}
+              muted
+              playsInline
+              loop
+              preload="none"
+              aria-hidden
+              className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300"
+              style={{ pointerEvents: "none" }}
+            />
+          )}
           {showBadge && <VideoBadge />}
           <div
             className="wg-thumb-overlay absolute inset-0 pointer-events-none"
             style={{ background: "rgba(0,0,0,0.14)" }}
           />
-        </div>
+        </motion.div>
 
         {/* Meta */}
         <div className="mt-3 min-h-[3em]">

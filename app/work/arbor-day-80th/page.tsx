@@ -8,6 +8,7 @@ export const metadata = {
 export default function ArborDay80thPage() {
   return (
     <CaseStudy
+      slug="arbor-day-80th"
       categoryLabel="Graphic Design"
       year="2025"
       title="식목일 80주년 포스터"

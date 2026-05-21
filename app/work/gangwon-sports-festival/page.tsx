@@ -8,6 +8,7 @@ export const metadata = {
 export default function GangwonSportsFestivalPage() {
   return (
     <CaseStudy
+      slug="gangwon-sports-festival"
       categoryLabel="Graphic Design"
       year="2025"
       title="강원특별자치도민 체육대회 포스터"

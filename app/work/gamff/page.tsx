@@ -8,6 +8,7 @@ export const metadata = {
 export default function GamffPage() {
   return (
     <CaseStudy
+      slug="gamff"
       categoryLabel="Graphic Design"
       year="2026"
       title="GAMFF 포스터"

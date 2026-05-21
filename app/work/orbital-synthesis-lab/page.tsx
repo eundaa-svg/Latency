@@ -8,6 +8,7 @@ export const metadata = {
 export default function OrbitalSynthesisLabPage() {
   return (
     <CaseStudy
+      slug="orbital-synthesis-lab"
       categoryLabel="Graphic Design"
       year="2025"
       title="Orbital Synthesis Lab"

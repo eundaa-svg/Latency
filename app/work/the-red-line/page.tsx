@@ -8,6 +8,7 @@ export const metadata = {
 export default function TheRedLinePage() {
   return (
     <CaseStudy
+      slug="the-red-line"
       categoryLabel="Advertising Design"
       year="2025"
       title="The Red Line"

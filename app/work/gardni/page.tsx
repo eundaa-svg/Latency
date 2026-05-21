@@ -8,6 +8,7 @@ export const metadata = {
 export default function GardniPage() {
   return (
     <CaseStudy
+      slug="gardni"
       categoryLabel="Character Design"
       year="2025"
       title="가드니"
