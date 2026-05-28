@@ -1,49 +1,78 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-const DURATION = 2200; // count-up 0→100 (ms)
+const DURATION = 2200;          // count-up 0→100 (ms)
+const FULL = "LATENCY";
+const TYPE_START = 500;         // wait before first char
+const TYPE_STEP = 120;          // ms per character
+const TYPE_END = TYPE_START + FULL.length * TYPE_STEP; // ≈1340ms
+const COUNT_START = 1500;       // progress begins after typing settles
 
 interface LoadingScreenProps {
   onDone: () => void;
 }
 
-// huyml.co-style intro: the LATENCY wordmark fills in as a "Loading — XX%"
-// counter climbs to 100, with the site's menu pre-exposed along the bottom.
-// AppShell mounts this on first visit only (sessionStorage), so timing/replay
-// is owned there — this component just runs the count and calls onDone.
+// First-visit intro (AppShell-mounted, sessionStorage-gated): LATENCY types in
+// one character at a time with a blinking cursor, then "Loading — XX%" counts
+// to 100 and hands off via onDone. Reduced motion shows the wordmark at once.
 export function LoadingScreen({ onDone }: LoadingScreenProps) {
+  const reduce = useReducedMotion();
+
+  const [typed, setTyped] = useState(0);
+  const [typingDone, setTypingDone] = useState(false);
   const [progress, setProgress] = useState(0);
   const [exiting, setExiting] = useState(false);
   const doneRef = useRef(onDone);
   doneRef.current = onDone;
 
+  // ── Typewriter ──────────────────────────────────────────────────────────
   useEffect(() => {
+    if (reduce) { setTyped(FULL.length); setTypingDone(true); return; }
+    let i = 0;
+    let typeInt = 0;
+    const startTimer = window.setTimeout(() => {
+      typeInt = window.setInterval(() => {
+        i += 1;
+        setTyped(i);
+        if (i >= FULL.length) { clearInterval(typeInt); setTypingDone(true); }
+      }, TYPE_STEP);
+    }, TYPE_START);
+    return () => { clearTimeout(startTimer); clearInterval(typeInt); };
+  }, [reduce]);
+
+  // ── Progress count-up (starts after typing settles) ───────────────────────
+  useEffect(() => {
+    const startDelay = reduce ? 300 : COUNT_START;
     let raf = 0;
-    const start = performance.now();
+    let holdTimer = 0;
+    let doneTimer = 0;
 
-    const tick = (now: number) => {
-      const t = Math.min((now - start) / DURATION, 1);
-      // easeOutCubic — fast then settling, so the last percent feels deliberate
-      const eased = 1 - Math.pow(1 - t, 3);
-      setProgress(eased * 100);
+    const startTimer = window.setTimeout(() => {
+      const start = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min((now - start) / DURATION, 1);
+        const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+        setProgress(eased * 100);
+        if (t < 1) {
+          raf = requestAnimationFrame(tick);
+        } else {
+          holdTimer = window.setTimeout(() => setExiting(true), 260);
+          doneTimer = window.setTimeout(() => doneRef.current(), 720);
+        }
+      };
+      raf = requestAnimationFrame(tick);
+    }, startDelay);
 
-      if (t < 1) {
-        raf = requestAnimationFrame(tick);
-      } else {
-        // Hold at 100% briefly, then fade out and hand off.
-        const hold = setTimeout(() => setExiting(true), 260);
-        const done = setTimeout(() => doneRef.current(), 260 + 460);
-        cleanup = () => { clearTimeout(hold); clearTimeout(done); };
-      }
+    return () => {
+      clearTimeout(startTimer);
+      cancelAnimationFrame(raf);
+      clearTimeout(holdTimer);
+      clearTimeout(doneTimer);
     };
-
-    let cleanup = () => {};
-    raf = requestAnimationFrame(tick);
-    return () => { cancelAnimationFrame(raf); cleanup(); };
-  }, []);
+  }, [reduce]);
 
   const pct = Math.min(Math.round(progress), 100);
 
@@ -57,22 +86,16 @@ export function LoadingScreen({ onDone }: LoadingScreenProps) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.46, ease: EASE }}
         >
-          {/* Top — wordmark fills left→right with progress */}
+          {/* Top — LATENCY types in with a blinking cursor */}
           <div className="ls-top">
-            <div className="ls-wordmark" aria-label="LATENCY">
-              <span className="ls-word ls-word-ghost" aria-hidden>LATENCY</span>
-              <span
-                className="ls-word ls-word-fill"
-                aria-hidden
-                style={{ clipPath: `inset(0 ${100 - pct}% 0 0)` }}
-              >
-                LATENCY
-              </span>
-            </div>
+            <h1 className="ls-word" aria-label={FULL}>
+              <span aria-hidden>{FULL.slice(0, typed)}</span>
+              <span className="ls-cursor" aria-hidden>▮</span>
+            </h1>
           </div>
 
-          {/* Center — Loading — XX% */}
-          <div className="ls-center">
+          {/* Center — Loading — XX% (appears once typing is done) */}
+          <div className="ls-center" style={{ opacity: typingDone ? 1 : 0, transition: "opacity 400ms ease" }}>
             <p className="ls-loading">
               Loading <span className="ls-dash">—</span>{" "}
               <span className="ls-pct">{pct}%</span>
@@ -115,14 +138,14 @@ export function LoadingScreen({ onDone }: LoadingScreenProps) {
             </motion.div>
           </motion.div>
 
-          <LoadingStyles />
+          <LoadingStyles reduce={!!reduce} />
         </motion.div>
       )}
     </AnimatePresence>
   );
 }
 
-function LoadingStyles() {
+function LoadingStyles({ reduce }: { reduce: boolean }) {
   return (
     <style>{`
       .ls-root {
@@ -131,21 +154,25 @@ function LoadingStyles() {
         pointer-events: none;
       }
       .ls-top { flex: 0 0 auto; display: flex; justify-content: center; padding-top: clamp(72px, 14vh, 160px); }
-      .ls-wordmark { position: relative; display: inline-block; }
       .ls-word {
-        display: block;
-        font-family: var(--font-sans);
+        display: inline-flex; align-items: baseline;
+        font-family: var(--font-pixel);
         font-weight: 700;
         font-size: clamp(40px, 9vw, 120px);
         line-height: 1;
-        letter-spacing: -0.03em;
+        letter-spacing: 0.02em;
         white-space: nowrap;
-      }
-      .ls-word-ghost { color: var(--fg-subtle); }
-      .ls-word-fill {
-        position: absolute; inset: 0;
         color: var(--fg);
-        will-change: clip-path;
+        min-height: 1em;
+      }
+      .ls-cursor {
+        color: var(--accent);
+        margin-left: 0.06em;
+        ${reduce ? "" : "animation: lsBlink 1s step-end infinite;"}
+      }
+      @keyframes lsBlink {
+        0%, 50%      { opacity: 1; }
+        50.01%, 100% { opacity: 0; }
       }
 
       .ls-center { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; }
