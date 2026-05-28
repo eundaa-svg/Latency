@@ -9,16 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: [
-          "Pretendard Variable", "Pretendard",
-          "-apple-system", "BlinkMacSystemFont", "system-ui",
-          "Apple SD Gothic Neo", "Noto Sans KR", "sans-serif",
+        // Site-wide pixel stack: VT323 (Latin) → Galmuri11 (Korean) → system.
+        // sans/mono are aliases so any font-sans/font-mono utility (and the
+        // Tailwind preflight default) also renders pixel.
+        pixel: [
+          "VT323", "Galmuri11",
+          "Apple SD Gothic Neo", "Noto Sans KR", "ui-monospace", "monospace",
         ],
-        // mono kept as alias to sans — var(--font-mono) already remapped in globals.css
+        sans: [
+          "VT323", "Galmuri11",
+          "Apple SD Gothic Neo", "Noto Sans KR", "ui-monospace", "monospace",
+        ],
         mono: [
-          "Pretendard Variable", "Pretendard",
-          "-apple-system", "BlinkMacSystemFont", "system-ui",
-          "Apple SD Gothic Neo", "Noto Sans KR", "sans-serif",
+          "VT323", "Galmuri11",
+          "Apple SD Gothic Neo", "Noto Sans KR", "ui-monospace", "monospace",
         ],
       },
       colors: {
