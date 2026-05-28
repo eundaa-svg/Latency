@@ -86,6 +86,12 @@
   .pixel-glitch { animation: none; }
 }
 
+/* Logo mark — very slow full rotation (AnimatedLogo). */
+@keyframes logoRotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 /* ── Cursor ───────────────────────────────────────────────────────────────── */
 /* Apply only to html/body — children inherit, avoids per-element recalculation */
 html,
