@@ -79,6 +79,26 @@ export function WorkGrid({ works }: Props) {
         .wg-card:hover .wg-thumb-overlay { opacity: 1; }
         .wg-title { transition: opacity 180ms ease; }
         .wg-card:hover .wg-title { opacity: 0.65; }
+
+        .wg-index {
+          position: absolute; top: 10px; left: 12px;
+          font-family: var(--font-mono);
+          font-size: 11px; letter-spacing: 0.08em;
+          color: rgba(255,255,255,0.7);
+          opacity: 0; transform: translateY(-3px);
+          transition: opacity 220ms ease, transform 220ms ease, color 220ms ease;
+          pointer-events: none;
+        }
+        .wg-card:hover .wg-index { opacity: 1; transform: translateY(0); color: var(--accent); }
+        .wg-arrow {
+          position: absolute; top: 9px; right: 11px;
+          font-size: 13px; line-height: 1;
+          color: rgba(255,255,255,0.85);
+          opacity: 0; transform: translate(-3px, 3px);
+          transition: opacity 220ms ease, transform 220ms ease;
+          pointer-events: none;
+        }
+        .wg-card:hover .wg-arrow { opacity: 1; transform: translate(0, 0); }
       `}</style>
     </>
   );
@@ -129,7 +149,7 @@ const WorkCard = memo(function WorkCard({ work, index, eager, onSelect }: CardPr
       <button
         onClick={() => onSelect(work.id)}
         data-interactive="true"
-        className="block w-full text-left cursor-none focus:outline-none"
+        className="relative block w-full text-left cursor-none focus:outline-none"
       >
         {/* Shared element: layoutId ties this to the detail page hero */}
         <motion.div
@@ -175,6 +195,13 @@ const WorkCard = memo(function WorkCard({ work, index, eager, onSelect }: CardPr
             style={{ background: "rgba(0,0,0,0.14)" }}
           />
         </motion.div>
+
+        {/* Hover micro-interaction — outside the shared-element container so it
+            isn't captured by the card→detail layoutId transition */}
+        <span className="wg-index" aria-hidden>
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        {!showBadge && <span className="wg-arrow" aria-hidden>↗</span>}
 
         {/* Meta */}
         <div className="mt-3 min-h-[3em]">
