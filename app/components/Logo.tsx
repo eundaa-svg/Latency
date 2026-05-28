@@ -19,7 +19,7 @@ interface LogoProps {
 
 export function Logo({ size = "md", href = "/", className = "" }: LogoProps) {
   const px = SIZES[size];
-  const markSize = px; // sm 34 · md 46 · lg 60 — bumped for the transparent Lottie
+  const markSize = Math.round(px * 1.5); // sm 51 · md 69 · lg 90 — Lottie content has internal padding, so the box has to run larger than the wordmark basis to read at parity
 
   const mark = (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
