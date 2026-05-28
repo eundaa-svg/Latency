@@ -1,11 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
+import { AnimatedLogo } from "./AnimatedLogo";
 
-// Logo: 1920×1080 px (ratio 16:9)
+// Animated 6-dot breathing mark + LATENCY wordmark (pixel font).
+// Sizes are the dot-mark pixel dimensions; the wordmark scales alongside.
 const SIZES = {
-  sm: { w:  57, h: 32 },
-  md: { w: 107, h: 60 },
-  lg: { w: 142, h: 80 },
+  sm: 34,
+  md: 46,
+  lg: 60,
 } as const;
 
 interface LogoProps {
@@ -15,25 +16,34 @@ interface LogoProps {
 }
 
 export function Logo({ size = "md", href = "/", className = "" }: LogoProps) {
-  const { w, h } = SIZES[size];
+  const px = SIZES[size];
 
-  const img = (
-    <Image
-      src="/brand/logo.png"
-      alt="LATENCY"
-      width={w}
-      height={h}
-      priority
-      className={`h-auto w-auto opacity-100 hover:opacity-75 transition-opacity duration-200 ${className}`}
-      style={{ maxWidth: w, maxHeight: h }}
-    />
+  const mark = (
+    <span className={`inline-flex items-center gap-2.5 ${className}`}>
+      <AnimatedLogo size={px} />
+      <span
+        className="font-[family-name:var(--font-pixel)] leading-none"
+        style={{ fontSize: Math.round(px * 0.46), letterSpacing: "0.08em", color: "var(--fg)" }}
+      >
+        LATENCY
+      </span>
+    </span>
   );
 
-  if (!href) return img;
+  if (!href) return mark;
 
   return (
-    <Link href={href} aria-label="LATENCY — Home" data-interactive="true" className="cursor-none focus:outline-none inline-flex">
-      {img}
+    <Link
+      href={href}
+      aria-label="LATENCY — Home"
+      data-interactive="true"
+      className="lg-link cursor-none focus:outline-none inline-flex items-center"
+    >
+      {mark}
+      <style>{`
+        .lg-link { transition: opacity 200ms ease; }
+        .lg-link:hover { opacity: 0.75; }
+      `}</style>
     </Link>
   );
 }
