@@ -1,8 +1,10 @@
 import Link from "next/link";
-import { AnimatedLogo } from "./AnimatedLogo";
+import { LottieLogoMark } from "./LottieLogoMark";
 
-// Animated 6-dot breathing mark + LATENCY wordmark (pixel font).
-// Sizes are the dot-mark pixel dimensions; the wordmark scales alongside.
+// Lottie mark + LATENCY wordmark (pixel font). `px` governs the wordmark text
+// scale (kept identical to the previous look). The mark box is intentionally
+// smaller than the text-basis so the Lottie reads as a compact header glyph
+// rather than dominating the wordmark.
 const SIZES = {
   sm: 34,
   md: 46,
@@ -17,10 +19,11 @@ interface LogoProps {
 
 export function Logo({ size = "md", href = "/", className = "" }: LogoProps) {
   const px = SIZES[size];
+  const markSize = Math.round(px * 0.7); // sm 24 · md 32 · lg 42
 
   const mark = (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <AnimatedLogo size={px} />
+      <LottieLogoMark size={markSize} />
       <span
         className="font-[family-name:var(--font-pixel)] leading-none"
         style={{ fontSize: Math.round(px * 0.46), letterSpacing: "0.08em", color: "var(--fg)" }}
