@@ -32,6 +32,11 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,500&display=swap"
         />
+        {/* Pixel terminal face — used only for the home page branding frame */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+        />
       </head>
       <body className="antialiased">
         <AppShell>{children}</AppShell>

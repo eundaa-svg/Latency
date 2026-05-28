@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { IntroReveal } from "./IntroReveal";
 import { WorkCanvas } from "./work/WorkCanvas";
 import { Logo } from "./Logo";
+import { PixelFrame } from "./PixelFrame";
 import type { Work, PortfolioCategory } from "@/lib/db";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -79,6 +80,9 @@ export function IntroPage({ works, categories, initialView }: Props) {
             ))}
           </nav>
         </header>
+
+        {/* tr.af-style pixel branding overlay — home landing only */}
+        <PixelFrame onArrow={() => setView("works")} />
 
         {/* Reveal body — top-aligned, scrollable, no items-center to avoid top clip */}
         <div className="flex-1 overflow-y-auto">
