@@ -51,6 +51,9 @@
                system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   --font-mono: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
                system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+
+  /* Serif display face — works page title only ("Selected Work"). */
+  --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
 }
 
 /* ── Cursor ───────────────────────────────────────────────────────────────── */
