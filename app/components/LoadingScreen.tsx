@@ -157,7 +157,7 @@ function LoadingStyles({ reduce }: { reduce: boolean }) {
       .ls-word {
         display: inline-flex; align-items: baseline;
         font-family: var(--font-pixel);
-        font-weight: 700;
+        font-weight: 400;
         font-size: clamp(40px, 9vw, 120px);
         line-height: 1;
         letter-spacing: 0.02em;
