@@ -56,13 +56,18 @@
   --font-serif: var(--font-pixel);
 }
 
-/* Korean pixel face — self-hosted (public/fonts), no CDN dependency. */
+/* Korean pixel face — self-hosted (public/fonts), no CDN dependency.
+   size-adjust shrinks Hangul to ~85% so it visually matches VT323 (Galmuri's
+   metrics run ~20% larger at the same font-size). unicode-range scopes Galmuri
+   to Korean only, so Latin/digits keep using VT323 unscaled. */
 @font-face {
   font-family: "Galmuri11";
   src: url("/fonts/Galmuri11.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+  size-adjust: 85%;
+  unicode-range: U+AC00-D7A3, U+1100-11FF, U+3130-318F, U+A960-A97F, U+D7B0-D7FF;
 }
 
 /* ── Pixel frame (tr.af-style home branding) ──────────────────────────────── */
