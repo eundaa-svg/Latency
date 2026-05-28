@@ -46,17 +46,35 @@ export function LottieLogoMark({ size = 32, className = "" }: Props) {
   return (
     <span
       className={className}
-      style={{ width: size, height: size, display: "inline-flex", flexShrink: 0 }}
+      style={{
+        width: size, height: size,
+        display: "inline-flex",
+        alignItems: "center", justifyContent: "center",
+        flexShrink: 0,
+        overflow: "visible",
+      }}
       aria-hidden
     >
       {data ? (
-        <Lottie
-          animationData={data}
-          loop
-          autoplay
-          style={{ width: "100%", height: "100%" }}
-          rendererSettings={{ preserveAspectRatio: "xMidYMid meet" }}
-        />
+        // Inner scaled wrapper — the Lottie canvas (1728×1049) has internal
+        // whitespace around the actual mark, so we scale up the rendered svg
+        // to fill the box. Bump SCALE if you want the mark larger.
+        <span
+          style={{
+            width: "100%", height: "100%",
+            display: "inline-block",
+            transform: "scale(2.6)",
+            transformOrigin: "center center",
+          }}
+        >
+          <Lottie
+            animationData={data}
+            loop
+            autoplay
+            style={{ width: "100%", height: "100%" }}
+            rendererSettings={{ preserveAspectRatio: "xMidYMid meet" }}
+          />
+        </span>
       ) : null}
     </span>
   );
