@@ -26,6 +26,8 @@ export interface CaseStudyProps {
   subtitle?:     string;
   image?:        { src: string; alt: string; width: number; height: number };
   video?:        string;
+  /** Optional logo / brand motion video — stacked above `video` in the hero. */
+  logoVideo?:    string;
   youtubeId?:    string;
   description:   string;
   meta:          MetaRow[];
@@ -43,6 +45,7 @@ export function CaseStudy(props: CaseStudyProps) {
     subtitle,
     image,
     video,
+    logoVideo,
     youtubeId,
     description,
     meta,
@@ -126,7 +129,7 @@ export function CaseStudy(props: CaseStudyProps) {
 
   // ── Panels ──────────────────────────────────────────────────────────────────
 
-  const media = <HeroMedia {...{ slug, image, video, youtubeId, title, shouldReduceMotion }} />;
+  const media = <HeroMedia {...{ slug, image, video, logoVideo, youtubeId, title, shouldReduceMotion }} />;
 
   // Until we know the layout, render the desktop (horizontal) markup so the
   // shared-element hero is in place; GSAP simply no-ops if we end up mobile.
@@ -248,6 +251,7 @@ function HeroMedia({
   slug,
   image,
   video,
+  logoVideo,
   youtubeId,
   title,
   shouldReduceMotion,
@@ -255,6 +259,7 @@ function HeroMedia({
   slug: string;
   image?: CaseStudyProps["image"];
   video?: string;
+  logoVideo?: string;
   youtubeId?: string;
   title: string;
   shouldReduceMotion: boolean | null;
@@ -263,6 +268,26 @@ function HeroMedia({
     duration: shouldReduceMotion ? 0 : 0.5,
     ease: [0.4, 0, 0.2, 1] as const,
   };
+
+  // Logo motion stacked above the demo video (NOPI). Both autoplay.
+  if (logoVideo && video) {
+    return (
+      <div className="cs-hero-stack">
+        <video
+          src={logoVideo}
+          autoPlay loop muted playsInline preload="metadata"
+          aria-label={`${title} — logo motion`}
+          className="cs-hero-logo"
+        />
+        <video
+          src={video}
+          autoPlay loop muted playsInline preload="metadata"
+          aria-label={title}
+          className="cs-hero-demo"
+        />
+      </div>
+    );
+  }
 
   if (video) {
     return (
@@ -399,6 +424,21 @@ function CaseStudyStyles() {
       .cs-intro-media--video { flex: 0 0 68%; height: 80vh; }
       .cs-intro-media--video .cs-hero-el { width: 100%; height: auto; max-height: 80vh; }
 
+      /* Stacked hero — logo motion above the demo video (NOPI-only).
+         Both videos size from their intrinsic dimensions, capped by max-height
+         so the pair never exceeds the 80vh container. */
+      .cs-hero-stack {
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        width: 100%; height: 100%; gap: 16px;
+      }
+      .cs-hero-logo, .cs-hero-demo {
+        display: block; max-width: 100%;
+        width: auto; height: auto; object-fit: contain;
+      }
+      .cs-hero-logo { max-height: 22vh; }
+      .cs-hero-demo { max-height: 54vh; }
+
       .cs-hero-el {
         display: block; max-width: 100%; max-height: 100%;
         width: auto; height: auto; object-fit: contain;
@@ -471,6 +511,9 @@ function CaseStudyStyles() {
       .cs-root[data-mode="vertical"] .cs-intro-media { height: auto; margin-top: 32px; }
       .cs-root[data-mode="vertical"] .cs-hero-img-el { width: 100%; height: auto; max-height: none; }
       .cs-root[data-mode="vertical"] .cs-hero-el { width: 100%; }
+      .cs-root[data-mode="vertical"] .cs-hero-stack { height: auto; gap: 24px; }
+      .cs-root[data-mode="vertical"] .cs-hero-logo,
+      .cs-root[data-mode="vertical"] .cs-hero-demo { width: 100%; max-height: none; }
       .cs-root[data-mode="vertical"] .cs-desc { padding-top: 64px; padding-bottom: 64px; }
       .cs-root[data-mode="vertical"] .cs-visual { padding: 48px 0; }
       .cs-root[data-mode="vertical"] .cs-visual-inner { height: auto; }
