@@ -62,7 +62,9 @@ export function CaseStudy(props: CaseStudyProps) {
   const [horizontal, setHorizontal] = useState<boolean | null>(null);
 
   // Number of horizontal panels — drives snap math + the close panel.
-  const sectionCount = 2 + (additionalImages?.length ?? 0) + 1;
+  // logoVideo+video splits the hero into 2 solo panels instead of 1 intro.
+  const heroPanels = logoVideo && video ? 2 : 1;
+  const sectionCount = heroPanels + 1 + (additionalImages?.length ?? 0) + 1;
 
   useEffect(() => {
     const enable =
@@ -129,7 +131,7 @@ export function CaseStudy(props: CaseStudyProps) {
 
   // ── Panels ──────────────────────────────────────────────────────────────────
 
-  const media = <HeroMedia {...{ slug, image, video, logoVideo, youtubeId, title, shouldReduceMotion }} />;
+  const media = <HeroMedia {...{ slug, image, video, youtubeId, title, shouldReduceMotion }} />;
 
   // Until we know the layout, render the desktop (horizontal) markup so the
   // shared-element hero is in place; GSAP simply no-ops if we end up mobile.
@@ -170,17 +172,40 @@ export function CaseStudy(props: CaseStudyProps) {
       <div ref={containerRef} className="cs-container">
         <div ref={trackRef} className="cs-track">
 
-          {/* ── Panel 1 — Intro ─────────────────────────────────────────── */}
-          <section className={`case-section cs-panel cs-intro${video ? " cs-intro--video" : ""}`}>
-            <div className={`cs-intro-text${video ? " cs-intro-text--narrow" : ""}`}>
-              <p className="cs-eyebrow" style={{ color: "var(--accent)" }}>
-                {categoryLabel} · {year}
-              </p>
-              <h1 className="cs-title">{title}</h1>
-              {subtitle && <p className="cs-subtitle">{subtitle}</p>}
-            </div>
-            <div className={`cs-intro-media${video ? " cs-intro-media--video" : ""}`}>{media}</div>
-          </section>
+          {/* ── Hero ────────────────────────────────────────────────────────
+              logoVideo+video → two solo panels (logo, then demo).
+              Otherwise   → the standard text + media intro panel.            */}
+          {logoVideo && video ? (
+            <>
+              <section className="case-section cs-panel cs-solo">
+                <video
+                  src={logoVideo}
+                  autoPlay loop muted playsInline preload="metadata"
+                  aria-label={`${title} — logo motion`}
+                  className="cs-solo-video"
+                />
+              </section>
+              <section className="case-section cs-panel cs-solo">
+                <video
+                  src={video}
+                  autoPlay loop muted playsInline preload="metadata"
+                  aria-label={title}
+                  className="cs-solo-video"
+                />
+              </section>
+            </>
+          ) : (
+            <section className={`case-section cs-panel cs-intro${video ? " cs-intro--video" : ""}`}>
+              <div className={`cs-intro-text${video ? " cs-intro-text--narrow" : ""}`}>
+                <p className="cs-eyebrow" style={{ color: "var(--accent)" }}>
+                  {categoryLabel} · {year}
+                </p>
+                <h1 className="cs-title">{title}</h1>
+                {subtitle && <p className="cs-subtitle">{subtitle}</p>}
+              </div>
+              <div className={`cs-intro-media${video ? " cs-intro-media--video" : ""}`}>{media}</div>
+            </section>
+          )}
 
           {/* ── Panel 2 — Description + Meta ─────────────────────────────── */}
           <section className="case-section cs-panel cs-desc">
@@ -251,7 +276,6 @@ function HeroMedia({
   slug,
   image,
   video,
-  logoVideo,
   youtubeId,
   title,
   shouldReduceMotion,
@@ -259,7 +283,6 @@ function HeroMedia({
   slug: string;
   image?: CaseStudyProps["image"];
   video?: string;
-  logoVideo?: string;
   youtubeId?: string;
   title: string;
   shouldReduceMotion: boolean | null;
@@ -268,26 +291,6 @@ function HeroMedia({
     duration: shouldReduceMotion ? 0 : 0.5,
     ease: [0.4, 0, 0.2, 1] as const,
   };
-
-  // Logo motion stacked above the demo video (NOPI). Both autoplay.
-  if (logoVideo && video) {
-    return (
-      <div className="cs-hero-stack">
-        <video
-          src={logoVideo}
-          autoPlay loop muted playsInline preload="metadata"
-          aria-label={`${title} — logo motion`}
-          className="cs-hero-logo"
-        />
-        <video
-          src={video}
-          autoPlay loop muted playsInline preload="metadata"
-          aria-label={title}
-          className="cs-hero-demo"
-        />
-      </div>
-    );
-  }
 
   if (video) {
     return (
@@ -424,20 +427,13 @@ function CaseStudyStyles() {
       .cs-intro-media--video { flex: 0 0 68%; height: 80vh; }
       .cs-intro-media--video .cs-hero-el { width: 100%; height: auto; max-height: 80vh; }
 
-      /* Stacked hero — logo motion above the demo video (NOPI-only).
-         Both videos size from their intrinsic dimensions, capped by max-height
-         so the pair never exceeds the 80vh container. */
-      .cs-hero-stack {
-        display: flex; flex-direction: column;
-        align-items: center; justify-content: center;
-        width: 100%; height: 100%; gap: 16px;
-      }
-      .cs-hero-logo, .cs-hero-demo {
-        display: block; max-width: 100%;
+      /* Solo hero panel — used when a case study has both logoVideo and video.
+         Each video lives in its own full-viewport panel (NOPI only). */
+      .cs-solo { justify-content: center; }
+      .cs-solo-video {
+        display: block; max-width: 88%; max-height: 80vh;
         width: auto; height: auto; object-fit: contain;
       }
-      .cs-hero-logo { max-height: 22vh; }
-      .cs-hero-demo { max-height: 54vh; }
 
       .cs-hero-el {
         display: block; max-width: 100%; max-height: 100%;
@@ -511,9 +507,8 @@ function CaseStudyStyles() {
       .cs-root[data-mode="vertical"] .cs-intro-media { height: auto; margin-top: 32px; }
       .cs-root[data-mode="vertical"] .cs-hero-img-el { width: 100%; height: auto; max-height: none; }
       .cs-root[data-mode="vertical"] .cs-hero-el { width: 100%; }
-      .cs-root[data-mode="vertical"] .cs-hero-stack { height: auto; gap: 24px; }
-      .cs-root[data-mode="vertical"] .cs-hero-logo,
-      .cs-root[data-mode="vertical"] .cs-hero-demo { width: 100%; max-height: none; }
+      .cs-root[data-mode="vertical"] .cs-solo { padding: 64px 24px; }
+      .cs-root[data-mode="vertical"] .cs-solo-video { width: 100%; max-width: 100%; max-height: none; }
       .cs-root[data-mode="vertical"] .cs-desc { padding-top: 64px; padding-bottom: 64px; }
       .cs-root[data-mode="vertical"] .cs-visual { padding: 48px 0; }
       .cs-root[data-mode="vertical"] .cs-visual-inner { height: auto; }
