@@ -19,7 +19,7 @@ interface LogoProps {
 
 export function Logo({ size = "md", href = "/", className = "" }: LogoProps) {
   const px = SIZES[size];
-  const markSize = Math.round(px * 0.7); // sm 24 · md 32 · lg 42
+  const markSize = px; // sm 34 · md 46 · lg 60 — bumped for the transparent Lottie
 
   const mark = (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
