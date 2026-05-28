@@ -173,17 +173,27 @@ export function CaseStudy(props: CaseStudyProps) {
         <div ref={trackRef} className="cs-track">
 
           {/* ── Hero ────────────────────────────────────────────────────────
-              logoVideo+video → two solo panels (logo, then demo).
-              Otherwise   → the standard text + media intro panel.            */}
+              logoVideo+video → intro panel (text + logo video as media),
+                                then a solo demo panel.
+              Otherwise       → the standard text + media intro panel.        */}
           {logoVideo && video ? (
             <>
-              <section className="case-section cs-panel cs-solo">
-                <video
-                  src={logoVideo}
-                  autoPlay loop muted playsInline preload="metadata"
-                  aria-label={`${title} — logo motion`}
-                  className="cs-solo-video"
-                />
+              <section className="case-section cs-panel cs-intro">
+                <div className="cs-intro-text">
+                  <p className="cs-eyebrow" style={{ color: "var(--accent)" }}>
+                    {categoryLabel} · {year}
+                  </p>
+                  <h1 className="cs-title">{title}</h1>
+                  {subtitle && <p className="cs-subtitle">{subtitle}</p>}
+                </div>
+                <div className="cs-intro-media">
+                  <video
+                    src={logoVideo}
+                    autoPlay loop muted playsInline preload="metadata"
+                    aria-label={`${title} — logo motion`}
+                    className="cs-hero-el"
+                  />
+                </div>
               </section>
               <section className="case-section cs-panel cs-solo">
                 <video
