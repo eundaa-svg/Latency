@@ -168,15 +168,15 @@ export function CaseStudy(props: CaseStudyProps) {
         <div ref={trackRef} className="cs-track">
 
           {/* ── Panel 1 — Intro ─────────────────────────────────────────── */}
-          <section className="case-section cs-panel cs-intro">
-            <div className="cs-intro-text">
+          <section className={`case-section cs-panel cs-intro${video ? " cs-intro--video" : ""}`}>
+            <div className={`cs-intro-text${video ? " cs-intro-text--narrow" : ""}`}>
               <p className="cs-eyebrow" style={{ color: "var(--accent)" }}>
                 {categoryLabel} · {year}
               </p>
               <h1 className="cs-title">{title}</h1>
               {subtitle && <p className="cs-subtitle">{subtitle}</p>}
             </div>
-            <div className="cs-intro-media">{media}</div>
+            <div className={`cs-intro-media${video ? " cs-intro-media--video" : ""}`}>{media}</div>
           </section>
 
           {/* ── Panel 2 — Description + Meta ─────────────────────────────── */}
@@ -389,6 +389,15 @@ function CaseStudyStyles() {
         flex: 0 0 52%; display: flex; align-items: center; justify-content: center;
         height: 72vh;
       }
+
+      /* Video hero needs more room than a 1:1 image — bump width/height and
+         narrow the text column. Scoped via --video so image/youtube heroes
+         keep their existing balance. Vertical (mobile) mode overrides win on
+         specificity, so this never affects the stacked layout. */
+      .cs-intro--video { gap: 4vw; }
+      .cs-intro-text--narrow { flex: 0 0 26%; max-width: 360px; }
+      .cs-intro-media--video { flex: 0 0 68%; height: 80vh; }
+      .cs-intro-media--video .cs-hero-el { width: 100%; height: auto; max-height: 80vh; }
 
       .cs-hero-el {
         display: block; max-width: 100%; max-height: 100%;
