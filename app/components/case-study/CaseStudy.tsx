@@ -143,9 +143,15 @@ export function CaseStudy(props: CaseStudyProps) {
       style={{ background: "var(--bg)", color: "var(--fg)" }}
       data-mode={isMobile ? "vertical" : "horizontal"}
     >
-      {/* Fixed nav — stays put while the track slides underneath */}
+      {/* Fixed nav — stays put while the track slides underneath.
+          3-col: Back-to-Work (left) | Logo (center) | nav links (right). */}
       <nav className="cs-nav">
-        <Logo size="md" href="/" />
+        <Link href="/work" data-interactive="true" className="cs-back-inline cursor-none">
+          ← Back to Work
+        </Link>
+        <div className="cs-nav-center">
+          <Logo size="md" href="/" />
+        </div>
         <div className="cs-nav-links">
           {(["work", "about", "contact"] as const).map((label) => (
             <Link
@@ -159,15 +165,6 @@ export function CaseStudy(props: CaseStudyProps) {
           ))}
         </div>
       </nav>
-
-      {/* Back — fixed top-left under the logo */}
-      <Link
-        href="/work"
-        data-interactive="true"
-        className="cs-back-fixed cursor-none"
-      >
-        ← Back to Work
-      </Link>
 
       <div ref={containerRef} className="cs-container">
         <div ref={trackRef} className="cs-track">
@@ -364,26 +361,28 @@ function CaseStudyStyles() {
     <style>{`
       .cs-root { position: relative; min-height: 100vh; }
 
-      /* Fixed chrome */
+      /* Fixed chrome — 3-col: Back-to-Work | Logo (center) | nav links */
       .cs-nav {
         position: fixed; top: 0; left: 0; right: 0; z-index: 30;
-        display: flex; align-items: center; justify-content: space-between;
+        display: grid; grid-template-columns: 1fr auto 1fr;
+        align-items: center;
         padding: 28px 40px;
         pointer-events: none;
       }
       .cs-nav > * { pointer-events: auto; }
+      .cs-nav-center { display: flex; justify-content: center; }
+      .cs-back-inline {
+        justify-self: start;
+        font-size: 12px; color: var(--fg-muted); transition: opacity 150ms;
+      }
+      .cs-back-inline:hover { opacity: 0.7; }
       .cs-nav-links {
+        justify-self: end;
         display: flex; align-items: center; gap: 28px;
         font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase;
       }
       .cs-nav-link { color: var(--fg-muted); transition: color 150ms; }
       .cs-nav-link:hover { color: var(--fg); }
-
-      .cs-back-fixed {
-        position: fixed; top: 74px; left: 40px; z-index: 30;
-        font-size: 12px; color: var(--fg-muted); transition: opacity 150ms;
-      }
-      .cs-back-fixed:hover { opacity: 0.7; }
 
       .cs-hint {
         position: fixed; bottom: 28px; right: 40px; z-index: 30;
@@ -528,7 +527,6 @@ function CaseStudyStyles() {
 
       @media (max-width: 767px) {
         .cs-nav { padding: 20px 24px; }
-        .cs-back-fixed { top: 60px; left: 24px; }
       }
     `}</style>
   );

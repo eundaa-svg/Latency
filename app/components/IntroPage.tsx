@@ -47,10 +47,11 @@ export function IntroPage({ works, categories, initialView }: Props) {
         transition={{ duration: 0.4, ease: EASE }}
       >
         {/* NAV — always visible so users can skip or navigate away */}
-        <header className="shrink-0 flex items-center justify-between px-6 sm:px-10 pt-7 sm:pt-9 pb-4 relative z-10">
-          <Logo size="md" href="/" />
+        <header className="shrink-0 grid grid-cols-3 items-center px-6 sm:px-10 pt-7 sm:pt-9 pb-4 relative z-10">
+          <span aria-hidden />
+          <div className="flex justify-center"><Logo size="md" href="/" /></div>
 
-          <nav className="flex items-center gap-5 sm:gap-7 text-[11px] sm:text-[12px] tracking-[0.04em] uppercase">
+          <nav className="flex items-center justify-end gap-5 sm:gap-7 text-[11px] sm:text-[12px] tracking-[0.04em] uppercase">
             {/* WORK: skip reveal, go to works grid immediately */}
             <button
               onClick={() => setView("works")}

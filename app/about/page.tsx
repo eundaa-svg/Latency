@@ -30,9 +30,10 @@ export default function AboutPage() {
     <main className="relative" style={{ background: "var(--bg)", color: "var(--fg)" }}>
 
       {/* Fixed nav — stays available through the scroll */}
-      <nav className="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-6 sm:px-10 pt-7 sm:pt-9 pointer-events-none">
-        <div className="pointer-events-auto"><Logo size="md" href="/" /></div>
-        <div className="pointer-events-auto flex items-center gap-5 sm:gap-7 text-[11px] sm:text-[12px] tracking-[0.04em] uppercase">
+      <nav className="fixed top-0 inset-x-0 z-50 grid grid-cols-3 items-center px-6 sm:px-10 pt-7 sm:pt-9 pointer-events-none">
+        <span aria-hidden />
+        <div className="pointer-events-auto flex justify-center"><Logo size="md" href="/" /></div>
+        <div className="pointer-events-auto flex items-center justify-end gap-5 sm:gap-7 text-[11px] sm:text-[12px] tracking-[0.04em] uppercase">
           {[
             { label: "work",    href: "/work" },
             { label: "about",   href: "/about" },
